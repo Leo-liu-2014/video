@@ -1,5 +1,5 @@
 /**
- * Created by guangqiang on 2017/9/7.
+ * Created by godliu on 2017/9/7.
  */
 import {getFetch, postFetch} from '../../utils/network/request/HttpExtension'
 import {PATH} from '../../constants/urls'

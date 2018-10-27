@@ -38,7 +38,7 @@ export default class extends Component {
   render () {
     return (
       <ScrollView style={styles.container}>
-        <Swiper style={styles.wrapper} height={200} horizontal={false} autoplay>
+        <Swiper style={styles.wrapper} height={200} autoplay>
           {this.renderImg()}
         </Swiper>
         <Swiper style={styles.wrapper}

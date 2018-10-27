@@ -11,8 +11,10 @@ import ShowTimeList from './showTime/showTimeList'
 import ComingNewList from './comeingNew/comeingNewList'
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view'
 import deviceInfo from '../../../utils/deviceInfo'
+// import Banner from '../../common/banner'
+import TestSwiper from '../demoPage/TestSwiperComponent'
 
-import action from '../../../actionCreators/reading'
+import action from '../../../actionCreators/category'
 
 
 import Swiper from 'react-native-swiper'
@@ -29,11 +31,27 @@ class Home extends Component {
       comeingNewList: [],
       attentionList: [],
       bannerList:[],
-      showSwiper: true
+      showSwiper: true,
+      categoryList: []
     }
   }
 
   componentDidMount() {
+    // Promise.resolve(action.catatList()).then(response => {
+    //   this.timer = setTimeout(() => {
+    //     this.setState({
+    //       //dataSource: response[0].result.data
+    //     })
+    //   }, (10))
+    // })
+
+    Promise.resolve(action.catatList()).then(response => {
+        this.timer = setTimeout(() => {
+          this.setState({
+              categoryList: response.result.data
+          })
+        }, (10))
+    })
   }
 
   onValueChange = (value) => {
@@ -42,64 +60,66 @@ class Home extends Component {
 
   renderSwiper(){
     return(
-      <Swiper style={styles.wrapper} height={150} autoplay loop>
-          <TouchableOpacity  onPress={()=>{}} key={0}>
-            <Image style={{height: 150}}
-                  source={{uri: 'http://img5.mtime.cn/mt/2018/09/30/153647.85396352_1280X720X2.jpg'}}/>
-          </TouchableOpacity>
-          <TouchableOpacity  onPress={()=>{}}  key={1}>
-            <Image style={{height: 150}}
-                  source={{uri: 'http://img5.mtime.cn/mt/2018/09/30/153647.85396352_1280X720X2.jpg'}}/>
-          </TouchableOpacity>
-      </Swiper>
+      <View>
+        <Text>1</Text>
+      </View>
+      // <Swiper style={styles.wrapper} height={150} autoplay loop>
+      //     <TouchableOpacity  onPress={()=>{}} key={0}>
+      //       <Image style={{height: 150}}
+      //             source={{uri: 'http://img5.mtime.cn/mt/2018/09/30/153647.85396352_1280X720X2.jpg'}}/>
+      //     </TouchableOpacity>
+      //     <TouchableOpacity  onPress={()=>{}}  key={1}>
+      //       <Image style={{height: 150}}
+      //             source={{uri: 'http://img5.mtime.cn/mt/2018/09/30/153647.85396352_1280X720X2.jpg'}}/>
+      //     </TouchableOpacity>
+      // </Swiper>
     )
   }
 
   tabArr = [
-    {columnName: '推荐', type:"recommend", requestCode: 'T1348648517839'},
-    {columnName: '闪酷', type:"others", requestCode: 'T1348649580692'},
-    {columnName: '动物世界', type:"others", requestCode: 'T1348649654285'},
-    {columnName: '装备清单', type:"others", requestCode: 'T1486979691117'},
-    {columnName: 'Buff学员', type:"others", requestCode: 'T1421997195219'},
+    {name: '推荐', id:"1"},
+    {name: '最新', id:"2"},
+    {name: '排行', id:"3"},
+    {name: '中文', id:"4"},
 ];
 
   render() {
+    const { categoryList } = this.state;
     return (
-      <ScrollableTabView
-          ref={'tabView'}
-          renderTabBar={() => <ScrollableTabBar style={{height:45,backgroundColor:"#fff"}} />}
-          tabBarUnderlineStyle={{height:2, minWidth:Math.floor(deviceInfo.deviceWidth * .9 / 5),backgroundColor:'#fb7299'}}
-          tabBarInactiveTextColor='#515151'
-          tabBarActiveTextColor='#fb7299'
-          tabBarTextStyle={{fontSize: 14}}
-          onChangeTab={(obj) => {
-            if(obj.i !=0){
-              this.setState({
-                showSwiper: false
-              })
-            }
-          }}
-          onScroll={(position) => {}}
-          locked={false}
-          initialPage={0}
-      >
-          {
-            this.tabArr.map((item, index) => {
-                return(
-                      <View style={styles.containerStyle} key={index} tabLabel={item.columnName}>
-                          <ScrollView style={{flex:1}}>
-                            <View style={{flex:1}}>
-                              { this.state.showSwiper?
-                                  this.renderSwiper():null
-                              }
+      <View style={{flex:1}}>
+          <ScrollableTabView
+              ref={'tabView'}
+              renderTabBar={() => <ScrollableTabBar style={{height:45,backgroundColor:"#fff"}} />}
+              tabBarUnderlineStyle={{height:2, minWidth:Math.floor(deviceInfo.deviceWidth * .9 / 4),backgroundColor:'#fb7299'}}
+              tabBarInactiveTextColor='#515151'
+              tabBarActiveTextColor='#fb7299'
+              tabBarTextStyle={{fontSize: 14}}
+              onChangeTab={(obj) => {
+                console.log('tab')
+              }}
+              onScroll={(position) => {}}
+              locked={false}
+              initialPage={0}
+          >
+              {
+                this.tabArr.map((item, index) => {
+                    return(
+                          <View style={styles.containerStyle} key={index} tabLabel={item.name}>
+                              <ScrollView style={{flex:1}}>
+                                <View style={{flex:1}}>
+                                  {/* { this.state.showSwiper?
+                                      this.renderSwiper():null
+                                  } */}
+                                  {/* {this.renderSwiper()} */}
+                                </View>
+                                <ShowTimeList title={item.name} id={item.id} />
+                              </ScrollView>
                             </View>
-                            <ShowTimeList title="Recommend" type={item.type} />
-                          </ScrollView>
-                        </View>
-                )
-            })
-          }
-      </ScrollableTabView>
+                    )
+                })
+              }
+          </ScrollableTabView>
+      </View>
       // <View style={styles.containerStyle}>
       //   <View style={styles.navBarStyle}>
       //     <View style={styles.segContainer}>

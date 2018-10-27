@@ -1,17 +1,16 @@
 import React from 'react';
-import {PropTypes} from "react";
 import {StyleSheet, Text, View, ViewPropTypes} from "react-native";
 import Button from 'react-native-button';
 import { Actions } from 'react-native-router-flux';
 
 const contextTypes = {
-  drawer: React.PropTypes.object,
+  drawer: ViewPropTypes.object,
 };
 
 const propTypes = {
-  name: PropTypes.string,
+  name: ViewPropTypes.string,
   sceneStyle: ViewPropTypes.style,
-  title: PropTypes.string,
+  title: ViewPropTypes.string,
 };
 
 class TabView extends React.Component {

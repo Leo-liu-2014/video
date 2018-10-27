@@ -4,7 +4,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Platform, TouchableHighlight, InteractionManager } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import {GiftedListView} from './CrazyListView'
 import {commonStyle} from '../../../utils/commonStyle'
 
 class EnhancedListView extends React.Component {
@@ -107,27 +106,28 @@ class EnhancedListView extends React.Component {
 
   render() {
     return (
-      <GiftedListView
-        {...this.props}
-        initialListSize={18}
-        ref={'listView'}
-        firstLoader={true}
-        pagination={true}
-        refreshable={true}
-        autoPaginate={true}
-        lazyLoade={false}
-        emptyView={this._renderEmptyView}
-        refreshableWillRefreshView={this._renderRefreshableWillRefreshView}
-        refreshableWaitingView={this._renderRefreshableWaitingView}
-        paginationAllLoadedView={this._renderPaginationAllLoadedView}
-        paginationWaitingView={this._renderPaginationWaitingView}
-        enableEmptySections={true}
-        customStyles={{
-          refreshableView: {
-            backgroundColor: 'rgba(0,0,0,0)'
-          }
-        }}
-      />
+      <View />
+      // <GiftedListView
+      //   {...this.props}
+      //   initialListSize={18}
+      //   ref={'listView'}
+      //   firstLoader={true}
+      //   pagination={true}
+      //   refreshable={true}
+      //   autoPaginate={true}
+      //   lazyLoade={false}
+      //   emptyView={this._renderEmptyView}
+      //   refreshableWillRefreshView={this._renderRefreshableWillRefreshView}
+      //   refreshableWaitingView={this._renderRefreshableWaitingView}
+      //   paginationAllLoadedView={this._renderPaginationAllLoadedView}
+      //   paginationWaitingView={this._renderPaginationWaitingView}
+      //   enableEmptySections={true}
+      //   customStyles={{
+      //     refreshableView: {
+      //       backgroundColor: 'rgba(0,0,0,0)'
+      //     }
+      //   }}
+      // />
     )
   }
 }

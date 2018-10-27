@@ -1,10 +1,11 @@
 /**
  * Created by guangqiang on 2017/8/27.
  */
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native'
 import {commonStyle} from '../../../utils/commonStyle'
 import {Icon} from '../../../utils/icon'
+import { ViewPropTypes } from 'react-native'
 const barBtnWidth = 40
 const defaultNavigationBarProps = {
   hiddenNav: false,
@@ -17,26 +18,26 @@ const defaultNavigationBarProps = {
  * @type {{navigationBarProps: (*), onLeftPress: *, onRightPress: *, hiddenNav: (*), navBarStyle, navContentStyle, hiddenLeftItem: (*), leftIcon, leftTitle, leftTitleStyle, leftItemStyle, titleStyle, title, subTitleStyle, subTitle, hiddenRightItem: (*), rightIcon, rightTitle, rightTitleStyle, rightItemStyle}}
  */
 const navBarConfig = {
-  navigationBarProps: PropTypes.Object,
-  onLeftPress: PropTypes.fun,
-  onRightPress: PropTypes.fun,
-  hiddenNav: PropTypes.bool,
-  navBarStyle: PropTypes.Object,
-  navContentStyle: PropTypes.Object,
-  hiddenLeftItem: PropTypes.bool,
-  leftIcon: PropTypes.Object,
-  leftTitle: PropTypes.string,
-  leftTitleStyle: PropTypes.Object,
-  leftItemStyle: PropTypes.Object,
-  titleStyle: PropTypes.Object,
-  title: PropTypes.string,
-  subTitleStyle: PropTypes.Object,
-  subTitle: PropTypes.string,
-  hiddenRightItem: PropTypes.bool,
-  rightIcon: PropTypes.Object,
-  rightTitle: PropTypes.string,
-  rightTitleStyle: PropTypes.Object,
-  rightItemStyle: PropTypes.Object
+  navigationBarProps: ViewPropTypes.Object,
+  onLeftPress: ViewPropTypes.fun,
+  onRightPress: ViewPropTypes.fun,
+  hiddenNav: ViewPropTypes.bool,
+  navBarStyle: ViewPropTypes.Object,
+  navContentStyle: ViewPropTypes.Object,
+  hiddenLeftItem: ViewPropTypes.bool,
+  leftIcon: ViewPropTypes.Object,
+  leftTitle: ViewPropTypes.string,
+  leftTitleStyle: ViewPropTypes.Object,
+  leftItemStyle: ViewPropTypes.Object,
+  titleStyle: ViewPropTypes.Object,
+  title: ViewPropTypes.string,
+  subTitleStyle: ViewPropTypes.Object,
+  subTitle: ViewPropTypes.string,
+  hiddenRightItem: ViewPropTypes.bool,
+  rightIcon: ViewPropTypes.Object,
+  rightTitle: ViewPropTypes.string,
+  rightTitleStyle: ViewPropTypes.Object,
+  rightItemStyle: ViewPropTypes.Object
 }
 
 export default class NavigationBar extends Component {

@@ -1,5 +1,5 @@
 /**
- * Created by guangqiang on 2017/8/26.
+ * Created by godliu on 2017/8/26.
  */
 import {ApiSource}  from '../../constants/commonType'
 import {getFetch, postFetch} from '../../utils/network/request/HttpExtension'

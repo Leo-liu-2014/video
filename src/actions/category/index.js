@@ -1,5 +1,5 @@
 /**
- * Created by guangqiang on 2017/9/6.
+ * Created by godliu on 2017/9/6.
  */
 import {createAction} from 'redux-actions'
 import type from '../../constants/actionType'

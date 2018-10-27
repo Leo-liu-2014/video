@@ -1,5 +1,5 @@
 /**
- * Created by guangqiang on 2017/8/22.
+ * Created by godliu on 2017/8/22.
  */
 import {bindActionCreators}  from 'redux'
 import openChat from './find/chat'

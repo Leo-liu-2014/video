@@ -25,6 +25,7 @@ export default class CategoryList extends BaseComponent  {
 
   componentDidMount() {
     Promise.all([action.lableList({parentId:this.props.parentId})]).then(response => {
+      console.log(response, 'response')
       this.timer = setTimeout(() => {
         this.setState({
           dataSource: this.state.dataSource.cloneWithRows(response[0].result.data),

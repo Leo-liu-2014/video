@@ -1,10 +1,11 @@
 /**
  * Created by guangqiang on 2017/9/15.
  */
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
 import {View, Text, RefreshControl, ListView, ActivityIndicator} from '../index'
 import {StyleSheet} from 'react-native'
 import {commonStyle} from '../../../utils/commonStyle'
+import { ViewPropTypes } from 'react-native'
 class SimpleListView extends Component {
 
   constructor(props) {
@@ -79,12 +80,12 @@ class SimpleListView extends Component {
 }
 
 SimpleListView.propTypes = {
-  emptyView: PropTypes.func,
-  hasMore: PropTypes.bool.isRequired,
-  refreshing: PropTypes.bool.isRequired,
-  fetchLatestData: PropTypes.func.isRequired,
-  fetchMoreData: PropTypes.func.isRequired,
-  renderHasNoMoreView: PropTypes.func
+  emptyView: ViewPropTypes.func,
+  hasMore: ViewPropTypes.bool,
+  refreshing: ViewPropTypes.bool,
+  fetchLatestData: ViewPropTypes.func,
+  fetchMoreData: ViewPropTypes.func,
+  renderHasNoMoreView: ViewPropTypes.func
 }
 
 const styles = StyleSheet.create({

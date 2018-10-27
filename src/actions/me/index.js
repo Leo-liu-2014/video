@@ -1,5 +1,5 @@
 /**
- * Created by guangqiang on 2017/10/12.
+ * Created by godliu on 2017/10/12.
  */
 import {createAction} from 'redux-actions'
 

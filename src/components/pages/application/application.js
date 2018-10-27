@@ -2,14 +2,15 @@
  * Created by guangqiang on 2017/9/7.
  */
 import React, {Component} from 'react'
-import {View, Text, StyleSheet, ListView, Image, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, ListView, Image, TouchableOpacity, SectionList, ScrollView} from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {commonStyle} from '../../../utils/commonStyle'
 import {BaseComponent} from '../../base/baseComponent'
+import deviceInfo from '../../../utils/deviceInfo'
 
-const musicList = [
+const appList = [
   {
-    "title": "分类1",
+    "title": "应用1",
     "cover": "http://img.yidianling.com/file/2016/07/inu911sfu2qf1jwe.jpg!s330x330",
     "url": "http://img.yidianling.com/file/2016/07/77xdvc0du8vieg4z.mp3"
   },
@@ -53,9 +54,8 @@ const musicList = [
 export default class CategoryList extends BaseComponent  {
   constructor(props) {
     super(props)
-    this.renderRow = this.renderRow.bind(this)
     this.state = {
-      dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+      dataSource: []
     }
   }
 
@@ -68,59 +68,138 @@ export default class CategoryList extends BaseComponent  {
 
   componentDidMount() {
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(musicList)
+      dataSource: [ 
+        {data: [appList], title: "热门推荐"},
+        {data: [appList], title: "最近更新",},
+      ]
     })
-
-    // this.props.getMusicList(this.props.year, this.props.month).then(response => {
-    //   this.setState({
-    //     dataSource: this.state.dataSource.cloneWithRows(response.value.data)
-    //   })
-    // })
   }
-
-  renderRow(rowData, sectionId, rowId) {
-    return (
-      <TouchableOpacity
-        key={rowId}
-        style={styles.cellStyle}
-        onPress={() => Actions.movieCategoryList({id: 227422,title:rowData.title})}
-      >
-        <Image style={{width: 60, height: 60}} source={{uri: rowData.cover}}/>
-        <View style={styles.contentStyle}>
-          <Text style={{marginVertical: 5}}>{rowData.title}</Text>
-          <Text style={{marginVertical: 5}}>分类介绍</Text>
-        </View>
-        <Image source={require('../../../assets/images/forward.png')} resizeMode={"center"}/>
-      </TouchableOpacity>
-    )
-  }
-
   _render() {
+    const { dataSource } = this.state
     return (
-      <ListView
-        style={styles.container}
-        dataSource={this.state.dataSource}
-        renderRow={this.renderRow}
-      />
+      <View style={{flex:1}}>
+        <ScrollView>
+          {/* <Swiper /> */}
+          <SectionList
+              contentInset={{top:0,left:0,bottom:49,right:0}}// 设置他的滑动范围
+              renderItem={this._renderItem}
+              // ListFooterComponent={this._listFooterComponent}
+              // ListHeaderComponent={this._listHeaderComponent}
+              renderSectionHeader={this._renderSectionHeader}
+              showsVerticalScrollIndicator={false}
+              keyExtractor = {this._extraUniqueKey}// 每个item的key
+              // contentContainerStyle={styles.list}
+              // horizontal={true}
+              // pageSize={4}  // 配置pageSize确认网格数量
+              initialNumToRender={2}
+              sections={ dataSource }
+          />
+        </ScrollView>
+      </View>
     )
   }
+
+  _renderItem = ({ item})=> {
+    return (
+        <View  style={styles.list}>
+            {
+              item.map((item, i) => this.renderExpenseItem(item, i))
+            }
+        </View>
+
+    )
+  };
+
+  renderExpenseItem(item, i) {
+      return (
+        <TouchableOpacity key={i} onPress={() => this._pressRow(item)} underlayColor="transparent">
+            <View style={styles.row}>
+                <Image
+                  style={styles.img}
+                  source={{uri: item.cover}}
+                />
+                <Text>{item.title}</Text>
+            </View>
+        </TouchableOpacity>
+      )
+  }
+
+
+  _renderSectionHeader = ({ section }) => {
+    return(
+      
+      <View style={styles.sectionHeader}>
+            <Text style={styles.sectionHeaderText} >{section.title}</Text>
+        </View>
+    )
+  }
+
+  _listHeaderComponent() {
+      return (
+          <Text>Header</Text>
+      );
+  }
+
+  _listFooterComponent() {
+      return (
+          <Text style={[styles.remark]}>footer</Text>
+      );
+  }
+
+  _pressRow(item) {
+      this.props.navigator.pushTo(item.go)
+  } 
+
+  _extraUniqueKey(item ,index){
+      return "index"+index+item;
+  }
+
+  _renderEmpty() {
+    return(
+      <View>
+        <Text>努力加载中！</Text>
+      </View>
+    )
+  }
+
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
+  list: {
+      //justifyContent: 'space-around',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignItems: 'flex-start',
+      backgroundColor: '#FFFFFF'
   },
-  cellStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 10,
-    marginVertical: 5,
-    borderBottomColor: commonStyle.lineColor,
-    borderBottomWidth: commonStyle.lineWidth
+  row: {
+      backgroundColor: '#FFFFFF',
+      justifyContent: 'center',
+      width: (deviceInfo.deviceWidth - 1) / 4,
+      height: (deviceInfo.deviceWidth - 1) / 3,
+      alignItems: 'center',
+      // borderWidth: 0.5,
+      // borderRadius: 5,
+      // borderColor: '#E6E6E6'
   },
-  contentStyle: {
-    flex: 1,
-    justifyContent: 'space-between',
-    marginLeft: 10
+  sectionHeader: {
+      padding: 6.5,
+      
+  },
+  sectionHeaderText: {
+    fontSize: 14,
+    color: '#000',
+  },
+  remark: {
+      margin: 10,
+      fontSize: 10,
+      color: '#D2D2D2',
+      marginBottom: 10,
+      alignSelf: 'center',
+  },
+  img : {
+    width:(deviceInfo.deviceWidth - 1) / 4.5,
+    height:(deviceInfo.deviceWidth - 1) / 4,
+    marginBottom:5
   }
-})
+});
