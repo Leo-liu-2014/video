@@ -7,11 +7,12 @@ import {BaseComponent} from '../../base/baseComponent'
 import {connect} from 'react-redux'
 import Action from '../../../actions'
 import ViewPager from 'react-native-viewpager'
-import action from '../../../actionCreators/reading'
-import Swiper from 'react-native-swiper'
 import {commonStyle} from '../../../utils/commonStyle'
 import ArticleList from './articleList'
 import {Actions} from 'react-native-router-flux'
+
+import Swiper from '../../common/swiper'
+import action from '../../../actionCreators/category'
 
 const reading = [
   {
@@ -82,8 +83,20 @@ class Reading extends BaseComponent {
 
   componentDidMount() {
     
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(reading),
+    // this.setState({
+    //   dataSource: this.state.dataSource.cloneWithRows(reading),
+    // })
+
+    Promise.resolve(action.getNovelList({id:8})).then(response => {
+      if(response){
+        this.timer = setTimeout(() => {
+          this.setState({
+              dataSource: this.state.dataSource.cloneWithRows(response.result.data)
+          })
+        }, (10))
+      }
+    }).catch(()=>{
+      console.log(111)
     })
 
     // Promise.all([action.readingBannerList(), action.readingArticleList()]).then(response => {
@@ -170,11 +183,7 @@ class Reading extends BaseComponent {
         <ScrollView
           removeClippedSubviews={false}
         >
-          {
-            this.state.swiperShow ? <Swiper style={styles.wrapper} height={150} autoplay loop>
-              {this.renderImg()}
-            </Swiper> : <View/>
-          }
+          <Swiper type="app" />
           
           <View style={{flex:1,paddingLeft:10,paddingRight:10}}>
             <ListView

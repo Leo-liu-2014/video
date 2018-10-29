@@ -2,7 +2,8 @@ import React, {Component} from "react"
 import store from '../store'
 import {Provider, connect} from 'react-redux'
 import {Scene, Router, Actions, Reducer, ActionConst, Modal, Stack, Lightbox} from "react-native-router-flux"
-import {View, Platform} from "react-native"
+import {View, Platform,  Alert, Linking} from "react-native"
+import Button from "react-native-button";
 import Action from '../actions'
 import {dispatch} from '../utils/venilog/dispatchLog'
 import type from '../constants/actionType'
@@ -80,7 +81,13 @@ import SelectorList from '../components/common/selector'
 import WebView from '../components/common/webView'
 
 //import SplashScreen from '../native_modules/SplashScreen';
+import AppInfo from '../../config/index';
 
+// 消息通知栏组件
+import InitMessage from '../components/pages/base/message'
+
+//获取版本
+import action from '../actionCreators/category'
 
 
 
@@ -296,7 +303,8 @@ const scenes = Actions.create(
         <Scene key='loading' component={connect(
           (state) => state.common.loading
         )(Loading)}/>
-        <Scene key="error" component={Error}/>
+        <Scene key="message" component={InitMessage}/>
+        
         <Scene key="mask" component={Mask}/>
 
       </Lightbox>
@@ -334,6 +342,34 @@ class App extends Component {
   //   if(Platform.OS === 'android')
   //       SplashScreen.hide();
   // }
+  componentDidMount(){
+    
+    /* 版本检查 */
+    console.log(AppInfo.appVersion, Platform.OS)
+    const Appinfo = Platform.OS==="android"?1:0
+    setTimeout(()=>{
+      // Actions.message("网站正式使用了！！！谢谢支持")
+    },200)
+
+    Promise.resolve(action.getConfig({type:Appinfo})).then(response => {
+      console.log(response)
+      const { version, domain, necessary } = response.result.data
+      if(response.code ==0){
+        //判断更新 
+        Alert.alert(
+          '更新通知',
+          `当前版本：${AppInfo.appVersion}，最新版本${version}`,
+          [
+            {text: 'OK', onPress: () => {
+              console.log('baidu')
+              // Linking.openURL('https:www.baidu.com');
+            }},
+          ]
+        )
+      }
+    })
+    
+  }
   render() {
     return (
       <View style={{flex: 1}}>

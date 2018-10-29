@@ -7,50 +7,8 @@ import {Actions} from 'react-native-router-flux'
 import {commonStyle} from '../../../utils/commonStyle'
 import {BaseComponent} from '../../base/baseComponent'
 import deviceInfo from '../../../utils/deviceInfo'
-
-const appList = [
-  {
-    "title": "应用1",
-    "cover": "http://img.yidianling.com/file/2016/07/inu911sfu2qf1jwe.jpg!s330x330",
-    "url": "http://img.yidianling.com/file/2016/07/77xdvc0du8vieg4z.mp3"
-  },
-  {
-    "title": "分类2",
-    "cover": "http://img.yidianling.com/file/2016/07/kqy3nolw2e7xoupi.jpg!s330x330",
-    "url": "http://video.yidianling.com/2016/07/02/f0662d2e4e9bc9813872ae5d11e8a37d.mp3"
-  },
-  {
-    "title": "分类3",
-    "cover": "http://img.yidianling.com/file/2016/07/y7g53dx25685z6it.jpg!s330x330",
-    "url": "http://video.yidianling.com/2016/07/01/a79a4daee77dd8c2136559567426c3ad.mp3"
-  },
-  {
-    "title": "分类4",
-    "cover": "http://img.yidianling.com/file/2016/06/jcb1lg33dfz9k11u.jpg!s330x330",
-    "url": "http://video.yidianling.com/2016/06/30/0e758ed7d37666d27abe0d94fdc03a0d.mp3"
-  },
-  {
-    "title": "分类5",
-    "cover": "http://img.yidianling.com/file/2016/06/bwj19xtgraa8hdk7.jpg!s330x330",
-    "url": "http://video.yidianling.com/2016/06/29/453d9597a7c907c34ccc7b3c74f0f9e7.mp3"
-  },
-  {
-    "title": "分类6",
-    "cover": "http://img.yidianling.com/file/2016/06/mlmvla07jw7hgr42.jpg!s330x330",
-    "url": "http://video.yidianling.com/2016/06/27/2cf652d89b8765dbaaeede548d16fde5.mp3"
-  },
-  {
-    "title": "分类7",
-    "cover": "http://img.yidianling.com/file/2016/06/04u9vnuug0itovd8.jpg!s330x330",
-    "url": "http://video.yidianling.com/2016/06/25/1d2d50587034b6665d153d4b4995043f.mp3"
-  },
-  {
-    "title": "分类8",
-    "cover": "http://img.yidianling.com/file/2016/06/rwx320illlojg7dd.jpg!s330x330",
-    "url": "http://video.yidianling.com/2016/06/25/80f9c394daec2dd553d1c7042ed4ac56.mp3"
-  }
-]
-
+import action from '../../../actionCreators/category'
+import Swiper from '../../common/swiper'
 export default class CategoryList extends BaseComponent  {
   constructor(props) {
     super(props)
@@ -67,19 +25,37 @@ export default class CategoryList extends BaseComponent  {
   }
 
   componentDidMount() {
-    this.setState({
-      dataSource: [ 
-        {data: [appList], title: "热门推荐"},
-        {data: [appList], title: "最近更新",},
-      ]
+    this._getRecommendListData()
+  }
+  _getRecommendListData = () => {
+    Promise.resolve(action.appList()).then(response => {
+      
+      this.setState({
+        dataSource: this.formatData(response.result.data)
+      })
     })
   }
+
+  formatData = (data=[]) => {
+    let tempdata = [];
+    data.map(item=>{
+      tempdata.push({
+        data: [item.appMangers],
+        name: item.catalogName,
+        id: item.catalogId,
+      })
+    })
+    return tempdata
+  }
+
   _render() {
     const { dataSource } = this.state
+    console.log(dataSource,123123)
     return (
       <View style={{flex:1}}>
         <ScrollView>
-          {/* <Swiper /> */}
+          <Swiper type="app" />
+          <View style={styles.content}>
           <SectionList
               contentInset={{top:0,left:0,bottom:49,right:0}}// 设置他的滑动范围
               renderItem={this._renderItem}
@@ -94,12 +70,20 @@ export default class CategoryList extends BaseComponent  {
               initialNumToRender={2}
               sections={ dataSource }
           />
+          </View>
         </ScrollView>
       </View>
     )
   }
 
   _renderItem = ({ item})=> {
+    if(item == ""){
+      return (
+        <View  style={styles.empty}>
+            <Text>暂无数据……</Text>
+        </View>
+      )
+    }
     return (
         <View  style={styles.list}>
             {
@@ -111,14 +95,15 @@ export default class CategoryList extends BaseComponent  {
   };
 
   renderExpenseItem(item, i) {
+    console.log(item.imagesurl)
       return (
-        <TouchableOpacity key={i} onPress={() => this._pressRow(item)} underlayColor="transparent">
+        <TouchableOpacity key={i} onPress={() => {}}>
             <View style={styles.row}>
-                <Image
+                  <Image
                   style={styles.img}
-                  source={{uri: item.cover}}
+                  source={{uri: item.imagesurl}}
                 />
-                <Text>{item.title}</Text>
+                <Text>{item.name}</Text>
             </View>
         </TouchableOpacity>
       )
@@ -128,8 +113,8 @@ export default class CategoryList extends BaseComponent  {
   _renderSectionHeader = ({ section }) => {
     return(
       
-      <View style={styles.sectionHeader}>
-            <Text style={styles.sectionHeaderText} >{section.title}</Text>
+      <View style={styles.tabTitle}>
+            <Text style={styles.textTitle} >{section.name}</Text>
         </View>
     )
   }
@@ -165,6 +150,13 @@ export default class CategoryList extends BaseComponent  {
 }
 
 const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+    backgroundColor: commonStyle.white,
+    paddingLeft: 10, 
+    paddingRight: 10,
+    paddingTop:20,
+  },
   list: {
       //justifyContent: 'space-around',
       flexDirection: 'row',
@@ -198,8 +190,29 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
   },
   img : {
-    width:(deviceInfo.deviceWidth - 1) / 4.5,
-    height:(deviceInfo.deviceWidth - 1) / 4,
+    //width:(deviceInfo.deviceWidth - 1) / 4.5,
+    //height:(deviceInfo.deviceWidth - 1) / 4,
+    width:100,
+    height:100,
     marginBottom:5
+  },
+  tabTitle: {
+    flexDirection:'row',  
+    flexWrap:'wrap',  
+    justifyContent:'space-between',
+    height:35,
+    marginTop:10
+
+  },
+  textTitle: {
+    fontSize:16,
+    color:"#000"
+  },
+  textMore: {
+    color:"#999"
+  },
+  empty: {
+    height:100,
+    justifyContent: 'center', alignItems: 'center',
   }
 });

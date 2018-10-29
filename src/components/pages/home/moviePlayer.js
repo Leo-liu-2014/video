@@ -12,6 +12,11 @@ import {formatTime} from '../../../utils/formatTime'
 import deviceInfo from '../../../utils/deviceInfo'
 import {MessageBarManager} from 'react-native-message-bar'
 import {StyleSheet} from '../../common'
+
+import { RootHUD } from '../../../utils/progressHUD'
+
+import action from '../../../actionCreators/category'
+
 const playerHeight = 250
 export default class MoviePlayer extends Component {
 
@@ -28,7 +33,12 @@ export default class MoviePlayer extends Component {
       isTouchedScreen: true,
       modalVisible: true,
       isLock: false,
-      vip: true
+      isDisplay: true,
+      videoUrl:"https://vfx.mtime.cn/Video/2018/06/26/mp4/180626214809040834.mp4",
+      videoTitle:"暂无视频.",
+      videoRemark:"暂无介绍。" ,
+      recommendData: []
+      
     }
   }
 
@@ -42,8 +52,22 @@ export default class MoviePlayer extends Component {
   }
 
   componentDidMount() {
-    Orientation.addOrientationListener(this._updateOrientation)
-    Orientation.addSpecificOrientationListener(this._updateSpecificOrientation)
+    Promise.resolve(action.contentDetail({id:this.props.id})).then(response => {
+      const { data, video:{ name, url, remark, isDispaly, isStore }} = response.result;
+      this.setState({
+        videoTitle: name,
+        videoUrl: url,
+        videoTitle: name, 
+        videoRemark: remark,
+        isDisplay: true,
+        isStore: isStore,
+        recommendData: data
+      })
+
+      Orientation.addOrientationListener(this._updateOrientation)
+      Orientation.addSpecificOrientationListener(this._updateSpecificOrientation)
+    })
+    
   }
 
   componentWillUnmount() {
@@ -59,6 +83,8 @@ export default class MoviePlayer extends Component {
   }
 
   setDuration(duration) {
+    //播放成功 增加播放次数
+    action.moviesNum({id:this.props.id})
     this.setState({duration: duration.duration})
   }
 
@@ -124,11 +150,26 @@ export default class MoviePlayer extends Component {
       </Modal>
     )
   }
+  renderRecommendList(data){
+    data.map(item=>{
+      return(
+        <TouchableOpacity onPress={()=>{Actions.moviePlayer({id: item.id})}} style={styles.recommendListDetail}>
+              <Image
+                style={styles.img}
+                source={{uri: item.url}}
+              />
+              <Text numberOfLines={1} style={{fontSize: 12,alignItems:'flex-start',textAlign: "left", marginVertical: 6, color: commonStyle.textBlockColor}}>
+                {item.name}
+              </Text>
+        </TouchableOpacity>
+      )
+    })
+  }
 
   render() {
-    const {orientation, isLock} = this.state
-    const {url, title, remark, isDisplay} = this.props
+    const {orientation, isLock, videoTitle, videoUrl, isDisplay, isStore, videoRemark, recommendData } = this.state
 
+    console.log(videoUrl, 123)
     return (
       <View style={{flex:1}}>
         {/* 视频播放类型 */}
@@ -137,7 +178,7 @@ export default class MoviePlayer extends Component {
           style={[styles.movieContainer, {height: orientation === 'PORTRAIT' ? playerHeight : deviceInfo.deviceWidth,
             marginTop: orientation === 'PORTRAIT' ? Platform.OS === 'ios' ? (deviceInfo.isIphoneX ? 40 : 20) : 0 : 0}]}
           onPress={() => this.setState({isTouchedScreen: !this.state.isTouchedScreen})}>
-            <Video source={{uri: url}}
+            <Video source={{uri: "https://vfx.mtime.cn/Video/2018/06/26/mp4/180626214809040834.mp4"}}
             ref={ref => this.player = ref}
             rate={this.state.rate}
             volume={1.0}
@@ -168,14 +209,14 @@ export default class MoviePlayer extends Component {
                     onPress={orientation === 'PORTRAIT' ? () => Actions.pop() : Orientation.lockToPortrait}>
                     <Icon name={'oneIcon|nav_back_o'} size={18} color={commonStyle.white}/>
                   </TouchableOpacity>
-                  <Text style={{backgroundColor: commonStyle.clear, color: commonStyle.white, marginLeft: 10}}>{title}</Text>
+                  <Text style={{backgroundColor: commonStyle.clear, color: commonStyle.white, marginLeft: 10}}>{videoTitle}</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems: commonStyle.center, justifyContent: commonStyle.between}}>
                   <TouchableOpacity
                     style={styles.navToolBar}
                     onPress={() => alert('关注视频')}>
                     {/* <Icon name={'oneIcon|tv_o'} size={20} color={commonStyle.white}/> */}
-                    <Text style={{color:"#fff"}}>{isDisplay?"取消收藏":"收藏"}</Text>
+                    <Text style={{color:"#fff"}}>{isStore?"取消收藏":"收藏"}</Text>
                   </TouchableOpacity>
                 </View>
               </View> : <View style={{height: commonStyle.navContentHeight, backgroundColor: commonStyle.black}}/>
@@ -222,7 +263,6 @@ export default class MoviePlayer extends Component {
                 }
               </View> : <View style={{height: 40}}/>
           }
-          {this.renderModal()}
         </TouchableOpacity>
         :(
           <View style={{flex:1}}>
@@ -233,7 +273,7 @@ export default class MoviePlayer extends Component {
                       onPress={orientation === 'PORTRAIT' ? () => Actions.pop() : Orientation.lockToPortrait}>
                       <Icon name={'oneIcon|nav_back_o'} size={18} color={commonStyle.white}/>
                     </TouchableOpacity>
-                    <Text style={{backgroundColor: commonStyle.clear, color: commonStyle.white, marginLeft: 10}}>{title}</Text>
+                    <Text style={{backgroundColor: commonStyle.clear, color: commonStyle.white, marginLeft: 10}}>{videoTitle}</Text>
                   </View>
                   <View style={{flexDirection: 'row', alignItems: commonStyle.center, justifyContent: commonStyle.between}}>
                     <TouchableOpacity
@@ -254,49 +294,17 @@ export default class MoviePlayer extends Component {
           </View>
         )}
         <View style={styles.detailContent}>
-          <Text style={{color: commonStyle.textBlockColor, lineHeight: 20}}>{`剧情： ${remark}`}</Text>
+          <Text style={{color: commonStyle.textBlockColor, lineHeight: 20}}>{`详细介绍： ${videoRemark}`}</Text>
         </View>
-        <View style={styles.recommend}>
-          <Text style={styles.recommendText}>热门推荐</Text>
-          <View style={styles.recommendList}>
-              <TouchableOpacity onPress={()=>{}} style={styles.recommendListDetail}>
-                <Image
-                  style={styles.img}
-                  source={{uri: 'http://img5.mtime.cn/mt/2018/09/13/183225.18667083_1280X720X2.jpg'}}
-                />
-                <Text numberOfLines={1} style={{fontSize: 12,alignItems:'flex-start',textAlign: "left", marginVertical: 6, color: commonStyle.textBlockColor}}>
-                  大块头也有小可爱
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={()=>{}}>
-                <Image
-                  style={styles.img}
-                  source={{uri: 'http://img5.mtime.cn/mt/2018/09/13/183225.18667083_1280X720X2.jpg'}}
-                />
-                <Text numberOfLines={1} style={{fontSize: 12,alignItems:'flex-start',textAlign: "left", marginVertical: 6, color: commonStyle.textBlockColor}}>
-                  大块头也有小可爱
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={()=>{}}>
-                <Image
-                  style={styles.img}
-                  source={{uri: 'http://img5.mtime.cn/mt/2018/09/13/183225.18667083_1280X720X2.jpg'}}
-                />
-                <Text numberOfLines={1} style={{fontSize: 12,alignItems:'flex-start',textAlign: "left", marginVertical: 6, color: commonStyle.textBlockColor}}>
-                  大块头也有小可爱
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={()=>{}}>
-                <Image
-                  style={styles.img}
-                  source={{uri: 'http://img5.mtime.cn/mt/2018/09/13/183225.18667083_1280X720X2.jpg'}}
-                />
-                <Text numberOfLines={1} style={{fontSize: 12,alignItems:'flex-start',textAlign: "left", marginVertical: 6, color: commonStyle.textBlockColor}}>
-                  大块头也有小可爱
-                </Text>
-              </TouchableOpacity>
+        {recommendData==""?<View /> :(
+          <View style={styles.recommend}>
+            <Text style={styles.recommendText}>热门推荐</Text>
+            <View style={styles.recommendList}>
+              {this.renderRecommendList(recommendData)}
+            </View>
           </View>
-        </View>
+        )}
+        
       </View>
     )
   }

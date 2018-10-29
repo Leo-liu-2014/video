@@ -146,7 +146,7 @@ class Me extends BaseComponent {
           {this.renderItem('我的收藏')}
           {this.renderItem('我的推荐')}
           {this.renderItem('设置', '', '', 'setting')}
-          {this.renderItem('Demo集合', '', '', 'demoPage')}
+          {/* {this.renderItem('Demo集合', '', '', 'demoPage')} */}
         </View>
       </View>
     )

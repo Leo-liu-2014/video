@@ -109,8 +109,8 @@ export default class ShowTimeList extends Component {
   _renderItem = ({ item }) => {
     if(item == ""){
       return (
-        <View  style={styles.list}>
-            <Text>暂无数据</Text>
+        <View  style={styles.empty}>
+            <Text>暂无数据……</Text>
         </View>
   
     )
@@ -143,7 +143,7 @@ export default class ShowTimeList extends Component {
           }}
           key={this.props.index}
         >
-          <Text style={styles.textMore}>更多></Text>
+          <Text style={styles.textMore}>更多</Text>
         </TouchableOpacity>
       </View>
 
@@ -171,8 +171,8 @@ export default class ShowTimeList extends Component {
 
   _renderEmpty() {
     return(
-      <View>
-        <Text>努力加载中！</Text>
+      <View style={styles.empty}>
+        <Text>暂无数据！</Text>
       </View>
     )
   }
@@ -251,6 +251,10 @@ const styles = StyleSheet.create({
       marginBottom: 10,
       alignSelf: 'center',
   },
+  empty: {
+    height:100,
+    justifyContent: 'center', alignItems: 'center',
+  }
 });
 
 

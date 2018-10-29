@@ -103,8 +103,8 @@ export default class TrailerList extends BaseComponent {
 
   _renderEmpty() {
     return(
-      <View>
-        <Text>努力加载中！</Text>
+      <View style={styles.empty}>
+        <Text>暂无数据……</Text>
       </View>
     )
   }
@@ -186,4 +186,8 @@ const styles = StyleSheet.create({
       marginBottom: 10,
       alignSelf: 'center',
   },
+  empty: {
+    height:100,
+    justifyContent: 'center', alignItems: 'center',
+  }
 });

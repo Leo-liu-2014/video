@@ -50,7 +50,7 @@ export default class extends Component {
         <View style={styles.toastStyle}>
           <Text>{this.props.data}</Text>
           <Button
-            onPress={this.closeModal.bind(this)}>关闭</Button>
+            onPress={this.closeModal.bind(this)}>好的</Button>
         </View>
       </Animated.View>
     )

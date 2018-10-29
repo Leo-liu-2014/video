@@ -20,7 +20,10 @@ export default class ShowTimeCell extends Component {
         style={styles.gridItem}
         onPress={() => {
           // Actions.movieDetail({id: data.id})
-          Actions.moviePlayer({url: data.url, title: data.title, remark: data.remark, isDisplay:data.isDispaly})
+          // Actions.moviePlayer({url: data.url, title: data.title, remark: data.remark, isDisplay:data.isDispaly})
+
+          Actions.moviePlayer({id: data.id})
+
         }}
         key={this.props.index}
       >
