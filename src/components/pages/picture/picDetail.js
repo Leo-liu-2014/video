@@ -30,7 +30,6 @@ export default class PicDetail extends BaseComponent {
 
   componentDidMount() {
     this.props.getPicDetail(this.props.id).then((response) => {
-      console.log(response,'response')
       this.setState({data: response.value.data})
     })
   }

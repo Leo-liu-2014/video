@@ -96,7 +96,6 @@ class Reading extends BaseComponent {
         }, (10))
       }
     }).catch(()=>{
-      console.log(111)
     })
 
     // Promise.all([action.readingBannerList(), action.readingArticleList()]).then(response => {

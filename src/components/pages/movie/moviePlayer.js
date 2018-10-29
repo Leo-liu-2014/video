@@ -54,7 +54,6 @@ export default class MoviePlayer extends Component {
   _updateSpecificOrientation = specificOrientation => this.setState({ specificOrientation })
 
   loadStart(data) {
-    console.log('loadStart', data)
   }
 
   setDuration(duration) {
@@ -82,11 +81,9 @@ export default class MoviePlayer extends Component {
   }
 
   onBuffer(data) {
-    console.log('onBuffer', data)
   }
 
   onTimedMetadata(data) {
-    console.log('onTimedMetadata', data)
   }
 
   showMessageBar = title => msg => type => {

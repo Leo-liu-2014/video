@@ -36,7 +36,6 @@ export default class UserInfo extends BaseComponent {
   }
 
   onRightPress() {
-    console.log('click')
   }
 
   _render() {

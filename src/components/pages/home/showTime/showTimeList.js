@@ -42,7 +42,7 @@ export default class ShowTimeList extends Component {
     //   )
     // }
     const { id, title } = this.props;
-    if(id ==1){
+    if(id == 1){
       return(
         <SectionList
               contentInset={{top:0,left:0,bottom:49,right:0}}// 设置他的滑动范围
@@ -98,12 +98,14 @@ export default class ShowTimeList extends Component {
 
   _getListData = id => {
     let data = [];
-    Promise.resolve(action.contentList({parentId:id,limt:4,pageNum:1})).then(response => {
-      console.log(response.result.data, 'adsasdasd')
+    Promise.resolve(action.contentList({categoryId:id,limt:4,pageNum:1})).then(response => {
     }).catch((error) => {
       console.error(error);
     })
     return data
+  }
+
+  getListData = () => {
   }
 
   _renderItem = ({ item }) => {
@@ -113,7 +115,7 @@ export default class ShowTimeList extends Component {
             <Text>暂无数据……</Text>
         </View>
   
-    )
+      )
     }
     return (
         <View  style={styles.list}>
@@ -149,22 +151,6 @@ export default class ShowTimeList extends Component {
 
   )}
 
-  _listHeaderComponent() {
-      return (
-          <Text>Header</Text>
-      );
-  }
-
-  _listFooterComponent() {
-      return (
-          <Text style={[styles.remark]}>footer</Text>
-      );
-  }
-
-  _pressRow(item) {
-      this.props.navigator.pushTo(item.go)
-  } 
-
   _extraUniqueKey(item ,index){
       return "index"+index+item;
   }
@@ -179,11 +165,11 @@ export default class ShowTimeList extends Component {
   render() {
 
     const { data, list } = this.state
-    if (data =="") {
-      return (
-          <View style={{flex:1}}>{this._renderEmpty()}</View>
-      );
-    }
+    // if (data =="") {
+    //   return (
+    //       <View style={{flex:1}}>{this._renderEmpty()}</View>
+    //   );
+    // }
     return (
       <View style={styles.content}>
         {this.renderListView(data)}
@@ -256,54 +242,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
   }
 });
-
-
-
-// export const styles = StyleSheet.create({
-//   content: {
-//     flex: 1,
-//     backgroundColor: commonStyle.white,
-//     paddingLeft: 10, 
-//     paddingRight: 10,
-//     paddingTop:20,
-//   },
-//   sectionHeader: {
-//     padding: 10,
-//     backgroundColor: '#f0f0f0'
-//   },
-//   cellContainer: {
-//     borderBottomWidth: 1,
-//     borderColor: '#dcdcdc',
-//     flexDirection:'row',
-//     alignItems:'center',
-//     padding:15
-//   },
-//   image: {
-//     width: 50,
-//     height: 50,
-//   },
-//   title: {
-//     marginLeft: 15,
-//   },
-//   tabTitle: {
-//     flexDirection:'row',  
-//     flexWrap:'wrap',  
-//     justifyContent:'space-between',
-//     height:35,
-//     marginTop:10
-
-//   },
-//   textTitle: {
-//     fontSize:20,
-//     color:"#000"
-//   },
-//   textMore: {
-//     color:"#999"
-//   },
-
-//   gridContainer: {
-//     flexDirection:'row',
-//     flexWrap:'wrap',
-//     justifyContent:'space-between',
-//   },
-// });

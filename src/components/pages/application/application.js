@@ -50,7 +50,6 @@ export default class CategoryList extends BaseComponent  {
 
   _render() {
     const { dataSource } = this.state
-    console.log(dataSource,123123)
     return (
       <View style={{flex:1}}>
         <ScrollView>
@@ -95,7 +94,6 @@ export default class CategoryList extends BaseComponent  {
   };
 
   renderExpenseItem(item, i) {
-    console.log(item.imagesurl)
       return (
         <TouchableOpacity key={i} onPress={() => {}}>
             <View style={styles.row}>

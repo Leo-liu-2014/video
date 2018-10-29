@@ -91,7 +91,6 @@ export default class Login extends BaseComponent {
     //let userLoginState= this.props.userLogin(params)
 
     // Promise.all([action.readingBannerList()]).then(response => {
-    //   console.log(response,9999)
     // })
 
     Promise.all([action.login(params)]).then(response => {

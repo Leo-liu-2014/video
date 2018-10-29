@@ -1,4 +1,6 @@
 {
   "plugins": [["import", { "libraryName": "antd-mobile" }]],
-  "presets": ["react-native"]
+  "presets": ["react-native"],
+  "env": { "production": { "plugins": ["transform-remove-console"] } }
+
 }

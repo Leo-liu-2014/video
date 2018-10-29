@@ -18,6 +18,7 @@ import { RootHUD } from '../../../utils/progressHUD'
 import action from '../../../actionCreators/category'
 
 const playerHeight = 250
+
 export default class MoviePlayer extends Component {
 
   constructor(props) {
@@ -34,10 +35,11 @@ export default class MoviePlayer extends Component {
       modalVisible: true,
       isLock: false,
       isDisplay: true,
-      videoUrl:"https://vfx.mtime.cn/Video/2018/06/26/mp4/180626214809040834.mp4",
+      videoUrl:"",
       videoTitle:"暂无视频.",
       videoRemark:"暂无介绍。" ,
-      recommendData: []
+      recommendData: [],
+      isloading:true
       
     }
   }
@@ -52,6 +54,10 @@ export default class MoviePlayer extends Component {
   }
 
   componentDidMount() {
+
+    Orientation.addOrientationListener(this._updateOrientation)
+    Orientation.addSpecificOrientationListener(this._updateSpecificOrientation)
+
     Promise.resolve(action.contentDetail({id:this.props.id})).then(response => {
       const { data, video:{ name, url, remark, isDispaly, isStore }} = response.result;
       this.setState({
@@ -63,9 +69,6 @@ export default class MoviePlayer extends Component {
         isStore: isStore,
         recommendData: data
       })
-
-      Orientation.addOrientationListener(this._updateOrientation)
-      Orientation.addSpecificOrientationListener(this._updateSpecificOrientation)
     })
     
   }
@@ -79,11 +82,15 @@ export default class MoviePlayer extends Component {
   _updateSpecificOrientation = specificOrientation => this.setState({ specificOrientation })
 
   loadStart(data) {
-    console.log('loadStart', data)
+    console.log('loading start', data)
   }
 
   setDuration(duration) {
+    console.log(duration, 'onload')
     //播放成功 增加播放次数
+    this.setState({
+      isloading: false
+    })
     action.moviesNum({id:this.props.id})
     this.setState({duration: duration.duration})
   }
@@ -109,11 +116,11 @@ export default class MoviePlayer extends Component {
   }
 
   onBuffer(data) {
-    console.log('onBuffer', data)
+    console.log(data, 'onBuffer')
   }
 
   onTimedMetadata(data) {
-    console.log('onTimedMetadata', data)
+    console.log(data, 'onTimedMetadata')
   }
 
   showMessageBar = title => msg => type => {
@@ -167,9 +174,8 @@ export default class MoviePlayer extends Component {
   }
 
   render() {
-    const {orientation, isLock, videoTitle, videoUrl, isDisplay, isStore, videoRemark, recommendData } = this.state
-
-    console.log(videoUrl, 123)
+    const {orientation, isLock, videoTitle, videoUrl, isDisplay, isStore, videoRemark, recommendData, isloading } = this.state
+    console.log(orientation,'orientation')
     return (
       <View style={{flex:1}}>
         {/* 视频播放类型 */}
@@ -177,28 +183,32 @@ export default class MoviePlayer extends Component {
         <TouchableOpacity
           style={[styles.movieContainer, {height: orientation === 'PORTRAIT' ? playerHeight : deviceInfo.deviceWidth,
             marginTop: orientation === 'PORTRAIT' ? Platform.OS === 'ios' ? (deviceInfo.isIphoneX ? 40 : 20) : 0 : 0}]}
-          onPress={() => this.setState({isTouchedScreen: !this.state.isTouchedScreen})}>
-            <Video source={{uri: "https://vfx.mtime.cn/Video/2018/06/26/mp4/180626214809040834.mp4"}}
-            ref={ref => this.player = ref}
-            rate={this.state.rate}
-            volume={1.0}
-            muted={false}
-            paused={this.state.paused}
-            resizeMode="cover"
-            repeat={true}
-            playInBackground={false}
-            playWhenInactive={false}
-            ignoreSilentSwitch={"ignore"}
-            progressUpdateInterval={250.0}
-            onLoadStart={(data) => this.loadStart(data)}
-            onLoad={data => this.setDuration(data)}
-            onProgress={(data) => this.setTime(data)}
-            onEnd={(data) => this.onEnd(data)}
-            onError={(data) => this.videoError(data)}
-            onBuffer={(data) => this.onBuffer(data)}
-            onTimedMetadata={(data) => this.onTimedMetadata(data)}
-            style={[styles.videoPlayer]}
+            onPress={() => this.setState({isTouchedScreen: !this.state.isTouchedScreen})}
+            activeOpacity={1}>
+            <Video source={{uri: videoUrl}}
+              ref={ref => this.player = ref}
+              rate={this.state.rate}
+              volume={1.0}
+              muted={false}
+              paused={this.state.paused}
+              resizeMode="cover"
+              repeat={true}
+              playInBackground={false}
+              playWhenInactive={false}
+              ignoreSilentSwitch={"ignore"}
+              progressUpdateInterval={250.0}
+              onLoadStart={(data) => this.loadStart(data)}
+              onLoad={data => this.setDuration(data)}
+              onProgress={(data) => this.setTime(data)}
+              onEnd={(data) => this.onEnd(data)}
+              onError={(data) => this.videoError(data)}
+              onBuffer={(data) => this.onBuffer(data)}
+              onTimedMetadata={(data) => this.onTimedMetadata(data)}
+              style={[styles.videoPlayer]}
           />
+          {
+              isloading?<View style={styles.loading}><Text style={{color:"#fff"}}>视频加载中……</Text></View>:null
+          }
           
           {
             !isLock ?
@@ -219,7 +229,7 @@ export default class MoviePlayer extends Component {
                     <Text style={{color:"#fff"}}>{isStore?"取消收藏":"收藏"}</Text>
                   </TouchableOpacity>
                 </View>
-              </View> : <View style={{height: commonStyle.navContentHeight, backgroundColor: commonStyle.black}}/>
+              </View> : <View/>
           }
           {
             orientation !== 'PORTRAIT' ?
@@ -231,7 +241,7 @@ export default class MoviePlayer extends Component {
               </TouchableOpacity> : null
           }
           {
-            this.state.isTouchedScreen && !isLock ?
+            this.state.isTouchedScreen && !isLock  && !isloading ?
               <View style={[styles.toolBarStyle, {marginBottom: Platform.OS === 'ios' ? 0 : orientation !== 'PORTRAIT' ? 25 : 0}]}>
                 <TouchableOpacity onPress={() => this.play()}>
                   <Icon name={`oneIcon|${this.state.playIcon}`} size={18} color={commonStyle.white}/>
@@ -312,7 +322,16 @@ export default class MoviePlayer extends Component {
 
 const styles = StyleSheet.create({
   movieContainer: {
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    backgroundColor: '#000'
+  },
+  loading : {
+    flexDirection: 'row',
+    position:'absolute',
+    alignItems: 'center',
+    justifyContent:'center',
+    top:120,
+    left: (deviceInfo.deviceWidth / 2.5)
   },
   videoPlayer: {
     position: 'absolute',

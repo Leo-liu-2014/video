@@ -111,7 +111,6 @@ export default class TrailerList extends BaseComponent {
 
   _render() {
 
-    console.log(this.state.dataSource, 31)
     return (
       <View style={styles.content}>
         {this.state.dataSource ==""?this._renderEmpty():(

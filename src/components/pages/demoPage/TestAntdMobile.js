@@ -43,7 +43,6 @@ export default class TestAntdMobile extends Component {
   }
 
   pickerViewOnChange = (value) => {
-    console.log(value)
     this.setState({
       value,
     })
@@ -51,7 +50,6 @@ export default class TestAntdMobile extends Component {
 
 
   imagePickerOnChange = (files, type, index) => {
-    console.log(files, type, index);
     this.setState({
       files,
     })

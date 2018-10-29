@@ -12,7 +12,6 @@ export default class ShowTimeCell extends Component {
 
   testStorage() {
     storage.load('userInfo', (data) => {
-      console.log(data)
     })
   }
 

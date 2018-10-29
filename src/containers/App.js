@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import store from '../store'
 import {Provider, connect} from 'react-redux'
 import {Scene, Router, Actions, Reducer, ActionConst, Modal, Stack, Lightbox} from "react-native-router-flux"
-import {View, Platform,  Alert, Linking} from "react-native"
+import {View, Platform,  Alert, Linking, NetInfo} from "react-native"
 import Button from "react-native-button";
 import Action from '../actions'
 import {dispatch} from '../utils/venilog/dispatchLog'
@@ -342,31 +342,46 @@ class App extends Component {
   //   if(Platform.OS === 'android')
   //       SplashScreen.hide();
   // }
+  componentWillMount(){
+    NetInfo.isConnected.fetch().then(isConnected => {
+      console.log('First, is ' + (isConnected ? 'online' : 'offline'));
+    });
+    function handleFirstConnectivityChange(isConnected) {
+      console.log('Then, is ' + (isConnected ? 'online' : 'offline'));
+      NetInfo.isConnected.removeEventListener(
+        'connectionChange',
+        handleFirstConnectivityChange
+      );
+    }
+    NetInfo.isConnected.addEventListener(
+      'connectionChange',
+      handleFirstConnectivityChange
+    );
+  }
   componentDidMount(){
     
     /* 版本检查 */
-    console.log(AppInfo.appVersion, Platform.OS)
-    const Appinfo = Platform.OS==="android"?1:0
+    const devices = Platform.OS==="android"?1:0;
+
     setTimeout(()=>{
       // Actions.message("网站正式使用了！！！谢谢支持")
     },200)
 
-    Promise.resolve(action.getConfig({type:Appinfo})).then(response => {
-      console.log(response)
-      const { version, domain, necessary } = response.result.data
-      if(response.code ==0){
-        //判断更新 
-        Alert.alert(
-          '更新通知',
-          `当前版本：${AppInfo.appVersion}，最新版本${version}`,
-          [
-            {text: 'OK', onPress: () => {
-              console.log('baidu')
-              // Linking.openURL('https:www.baidu.com');
-            }},
-          ]
-        )
-      }
+    Promise.resolve(action.getConfig({type:devices})).then(response => {
+      //const { version, domain, necessary } = response.result.data
+      // if(response.code ==0){
+      //   //判断更新 
+      //   Alert.alert(
+      //     '更新通知',
+      //     `当前版本：${AppInfo.appVersion}，最新版本${version}`,
+      //     [
+      //       {text: 'OK', onPress: () => {
+      //         console.log('baidu')
+      //         // Linking.openURL('https:www.baidu.com');
+      //       }},
+      //     ]
+      //   )
+      // }
     })
     
   }

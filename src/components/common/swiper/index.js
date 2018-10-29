@@ -3,7 +3,7 @@
  */
 import React, {Component} from 'react'
 import {View, Text, StyleSheet, Image} from 'react-native'
-// import Carousel, { Pagination } from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import deviceInfo from '../../../utils/deviceInfo'
 
 const data = [
@@ -69,7 +69,7 @@ export default class Swiper extends Component {
     
     return (
       <View style={styles.content}>
-        {/* <Carousel
+        <Carousel
               ref={(c) => { this._carousel = c; }}
               data={data}
               renderItem={this._renderItem}
@@ -79,9 +79,8 @@ export default class Swiper extends Component {
               onSnapToItem={(index) => this.setState({ activeSlide: index }) }
               height={150}
             />
-            {this.pagination} */}
+            {this.pagination}
 
-            <Text>11</Text>
       </View>
     )
   }
