@@ -49,6 +49,10 @@ import InitMessage from '../components/pages/base/message'
 //获取版本
 import action from '../actionCreators/category'
 
+//storage
+import {Icon, storage} from '../utils'
+
+
 
 
 const reducerCreate = params => {
@@ -69,7 +73,6 @@ const scenes = Actions.create(
   <Scene key="root">
     <Modal key="modal" hideNavBar>
       <Lightbox key="lightbox" hideNavBar={true}>
-
         <Stack key="init" back>
           <Scene key="main" initial back={false} hideNavBar component={TabBar}/>
           <Scene key="applicationDetail" hideNavBar component={connect(
@@ -155,7 +158,12 @@ class App extends Component {
   //       SplashScreen.hide();
   // }
   componentWillMount(){
-
+      storage.load('userInfo', (response) => {
+        if(!response){
+          Actions.userLogin()
+        }
+      })
+    
     NetInfo.isConnected.fetch().then(isConnected => {
       console.log('First, is ' + (isConnected ? 'online' : 'offline'));
     });

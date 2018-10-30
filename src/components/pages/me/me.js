@@ -17,7 +17,7 @@ class Me extends BaseComponent {
     super(props)
     this.scrollView = null
     this.state = {
-      userInfo: undefined,
+      userInfo: [],
       shareModalVisible: false
     }
   }
@@ -41,7 +41,17 @@ class Me extends BaseComponent {
   }
 
   componentDidMount() {
-    storage.load('userInfo', (response) => this.setState({userInfo: response}))
+    storage.load('userInfo', (response) => {
+      if(response){
+        this.setState({
+          userInfo: response.data
+        })
+        return 
+      }
+      this.setState({
+        userInfo: []
+      })
+    })
   }
 
   callback(type) {
@@ -54,23 +64,26 @@ class Me extends BaseComponent {
   }
 
   renderHeaderContainer() {
-    let data = this.state.userInfo || {}
+    const { userInfo=[] } = this.state
+
+    console.log(userInfo,9)
     return (
       <View style={{flexDirection: 'row', padding: 10, alignItems: commonStyle.center, backgroundColor: commonStyle.themeColor}}>
         <TouchableOpacity>
           {
-            data.iconurl ? <Image style={{width: 60, height: 60, borderRadius: 30, backgroundColor: '#000'}} source={{uri: data.iconurl}}/> : <Icon name={'oneIcon|avatar_o'} size={60} color={'#f8f8f8'}/>
+            userInfo.iconurl ? <Image style={{width: 60, height: 60, borderRadius: 30, backgroundColor: '#000'}} source={{uri: userInfo.iconurl}}/> : <Icon name={'oneIcon|avatar_o'} size={60} color={'#f8f8f8'}/>
           }
         </TouchableOpacity>
         {
-          this.state.userInfo ?
+          userInfo ?
             <View style={{marginLeft: 10, justifyContent: commonStyle.center}}>
-              <Text style={{marginBottom: 10, fontSize: 16, color: commonStyle.white}}>{data.name ? data.name : '用户名'}</Text>
+              <Text style={{marginBottom: 10, fontSize: 16, color: commonStyle.white}}>{userInfo.name}</Text>
               <View style={{flexDirection: commonStyle.row, alignItems: commonStyle.center}}>
-                <Text style={{color: commonStyle.white, marginRight: 10}}>{`${data.province}-${data.city}`}</Text>
+              <Text style={{color: commonStyle.white, marginRight: 10}}>{userInfo.type!=0?"注册会员":"vip会员"}</Text>
+              {/* <Text style={{color: commonStyle.white, marginRight: 10}}>{`${data.province}-${data.city}`}</Text> */}
                 <TouchableOpacity style={styles.userInfo}>
-                  <Text style={{color: commonStyle.white, marginLeft: 5, fontSize: 12}}>{data.gender}</Text>
-                  <Icon name={`oneIcon|${data.gender === '男' ? 'man_o' : 'woman_o'}`} size={15} color={commonStyle.white}/>
+                  <Text style={{color: commonStyle.white, marginLeft: 5, fontSize: 12}}>性别</Text>
+                  <Icon name={`oneIcon|${userInfo.sex === 1 ? 'man_o' : 'woman_o'}`} size={15} color={commonStyle.white}/>
                 </TouchableOpacity>
               </View>
             </View> :

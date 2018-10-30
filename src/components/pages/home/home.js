@@ -33,7 +33,9 @@ class Home extends PureComponent {
   componentDidMount() {
     try{
       Promise.resolve(action.catatList())
+      
         .then(response => {
+          console.log(response, 333)
             this.timer = setTimeout(
               () => {
                   this.setState({

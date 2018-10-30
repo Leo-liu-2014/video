@@ -175,7 +175,7 @@ export default class MoviePlayer extends Component {
 
   render() {
     const {orientation, isLock, videoTitle, videoUrl, isDisplay, isStore, videoRemark, recommendData, isloading } = this.state
-    console.log(orientation,'orientation')
+    console.log(videoUrl,'orientation')
     return (
       <View style={{flex:1}}>
         {/* 视频播放类型 */}
@@ -185,7 +185,9 @@ export default class MoviePlayer extends Component {
             marginTop: orientation === 'PORTRAIT' ? Platform.OS === 'ios' ? (deviceInfo.isIphoneX ? 40 : 20) : 0 : 0}]}
             onPress={() => this.setState({isTouchedScreen: !this.state.isTouchedScreen})}
             activeOpacity={1}>
-            <Video source={{uri: videoUrl}}
+            <Video 
+              source={{uri: videoUrl}}
+              // source={{uri:"http://classrecord.mmears.com/2018102709000000000309654/2018102709000000000309654.mp4"}}
               ref={ref => this.player = ref}
               rate={this.state.rate}
               volume={1.0}

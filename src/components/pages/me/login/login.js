@@ -2,11 +2,14 @@
  * Created by guangqiang on 2017/11/14.
  */
 import React from 'react'
-import {View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, ScrollView, NativeModules, Platform} from 'react-native'
+import {View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, ScrollView, NativeModules, Platform, Alert} from 'react-native'
 import {BaseComponent} from '../../../base/baseComponent'
 import {Icon, deviceInfo, Toast, commonStyle, storage} from '../../../../utils'
 import {Actions} from 'react-native-router-flux'
 import {sharePlatform} from '../../../../constants/commonType'
+
+import { Button } from 'react-native-elements';
+
 
 import action from '../../../../actionCreators/me'
 
@@ -21,7 +24,8 @@ export default class Login extends BaseComponent {
     this.state = {
       userName: '',
       pwd: '',
-      secret: true
+      secret: true,
+      loading: false
     }
   }
 
@@ -78,12 +82,16 @@ export default class Login extends BaseComponent {
     )
   }
 
-  loginClick() {
+  loginHandle() {
+
+    this.setState({
+      loading: !this.state.loading
+    })
     let params = {}
-    // params.loadinId = this.state.userName
-    // params.password = this.state.pwd
-    params.loadinId = '234@com'
-    params.password = '123456'
+    params.loadinId = this.state.userName
+    params.password = this.state.pwd
+    // params.loadinId = '234@com'
+    // params.password = '123456'
     // params.iconurl = 'http://ovyjkveav.bkt.clouddn.com/17-11-9/48949929.jpg'
     // params.gender = '男'
     // params.province = '上海'
@@ -93,18 +101,37 @@ export default class Login extends BaseComponent {
     // Promise.all([action.readingBannerList()]).then(response => {
     // })
 
-    Promise.all([action.login(params)]).then(response => {
-        storage.save('userInfo', params)
+    if(this.state.userName =="" || this.state.pwd == ""){
+      Toast.showError("用户名/密码不能为空！");
+      setTimeout(()=>{
+        this.setState({
+          loading: !this.state.loading
+        })
+      },300)
+      return false;
+    }
+    Promise.resolve(action.login(params)).then(response => {
+        if(!response.result.state){
+          Toast.showError(response.result.message);
+          setTimeout(()=>{
+            this.setState({
+              loading: !this.state.loading
+            })
+          },300)
+          return false;
+        }
+
+        //登录成功，存储用户数据
+        storage.save('userInfo', response.result);
         this.props.callback && this.props.callback('login')
         Toast.showSuccess('登录成功', () => Actions.pop())
           // storage.save('userInfo', params)
-          
     })
   }
 
   authLogin(platform) {
     LoginModule.login(sharePlatform[platform], (response) => {
-      storage.save('userInfo', response)
+      storage.save('userInfo', response);
       this.props.callback && this.props.callback('login')
       Toast.showSuccess('授权成功！')
       Actions.pop()
@@ -112,14 +139,30 @@ export default class Login extends BaseComponent {
   }
 
   renderLoginBtn() {
+    const { loading } = this.state
     return (
       <View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.loginBtn}
           onPress={() => this.loginClick()}
         >
           <Text style={{color: commonStyle.white, fontSize: 17}}>登录</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Button
+          title="登 录"
+          loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
+          buttonStyle={{
+            backgroundColor: commonStyle.themeColor,
+            height: 45,
+            borderColor: "transparent",
+            borderWidth: 0,
+            borderRadius: 20
+          }}
+          loading={loading}
+          disabled={loading}
+          onPress= {()=>this.loginHandle()}
+          containerStyle={{ marginTop: 20 }}
+        />
         <View style={{flexDirection: commonStyle.row, alignItems: commonStyle.center, marginTop: 15, marginHorizontal: 30, justifyContent: commonStyle.between}}>
           <TouchableOpacity onPress={() => Actions.userRegister()}>
             <Text style={{color: commonStyle.themeColor, fontSize: 14, fontWeight: 'bold'}}>免费注册</Text>
@@ -149,6 +192,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: commonStyle.white
   },
+  activeClassName: {
+    backgroundColor: commonStyle.themeColor,
+  },
+  active: {
+    marginHorizontal: 20,
+    marginTop: 20,
+    paddingVertical: 12,
+    width: deviceInfo.deviceWidth - 40,
+    backgroundColor: commonStyle.themeColor,
+    alignItems: commonStyle.center,
+    justifyContent: commonStyle.center,
+    borderRadius: 25,
+    borderWidth:0
+  },
   loginBtn: {
     marginHorizontal: 20,
     marginTop: 20,
@@ -157,6 +214,7 @@ const styles = StyleSheet.create({
     backgroundColor: commonStyle.themeColor,
     alignItems: commonStyle.center,
     justifyContent: commonStyle.center,
-    borderRadius: 25
+    borderRadius: 25,
+    borderWidth:0
   }
 })
