@@ -39,17 +39,20 @@ export default class CategoryList extends BaseComponent  {
   formatData = (data=[]) => {
     let tempdata = [];
     data.map(item=>{
-      tempdata.push({
-        data: [item.appMangers],
-        name: item.catalogName,
-        id: item.catalogId,
-      })
+      if(item.appMangers !=""){
+        tempdata.push({
+          data: [item.appMangers],
+          name: item.catalogName,
+          id: item.catalogId,
+        })
+      }
     })
     return tempdata
   }
 
   _render() {
     const { dataSource } = this.state
+    console.log(dataSource, 987)
     return (
       <View style={{flex:1}}>
         <ScrollView>
@@ -76,13 +79,6 @@ export default class CategoryList extends BaseComponent  {
   }
 
   _renderItem = ({ item})=> {
-    if(item == ""){
-      return (
-        <View  style={styles.empty}>
-            <Text>暂无数据……</Text>
-        </View>
-      )
-    }
     return (
         <View  style={styles.list}>
             {
@@ -110,7 +106,6 @@ export default class CategoryList extends BaseComponent  {
 
   _renderSectionHeader = ({ section }) => {
     return(
-      
       <View style={styles.tabTitle}>
             <Text style={styles.textTitle} >{section.name}</Text>
         </View>
@@ -156,18 +151,18 @@ const styles = StyleSheet.create({
     paddingTop:20,
   },
   list: {
-      //justifyContent: 'space-around',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      alignItems: 'flex-start',
-      backgroundColor: '#FFFFFF'
+      flexDirection:'row',
+      flexWrap:'wrap',
+      justifyContent:'flex-start',
+
   },
   row: {
       backgroundColor: '#FFFFFF',
       justifyContent: 'center',
-      width: (deviceInfo.deviceWidth - 1) / 4,
-      height: (deviceInfo.deviceWidth - 1) / 3,
+      width: (deviceInfo.deviceWidth - 1) / 4.2,
+      height: (deviceInfo.deviceWidth - 1) / 3.8,
       alignItems: 'center',
+      marginBottom:5
       // borderWidth: 0.5,
       // borderRadius: 5,
       // borderColor: '#E6E6E6'
@@ -188,10 +183,8 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
   },
   img : {
-    //width:(deviceInfo.deviceWidth - 1) / 4.5,
-    //height:(deviceInfo.deviceWidth - 1) / 4,
-    width:100,
-    height:100,
+    width:(deviceInfo.deviceWidth - 1) / 5,
+    height:(deviceInfo.deviceWidth - 1) / 5,
     marginBottom:5
   },
   tabTitle: {

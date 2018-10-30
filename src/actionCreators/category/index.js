@@ -11,7 +11,8 @@ const contentList = params => getFetch(`/content/getContentList?pageNum=${params
 const contentDetail = params => getFetch(`/content/getVoideById?id=${params.id}&limit=8`)
 const moviesNum = params => getFetch(`/content/addvideoNum?voideId=${params.id}`)
 const appList = params => getFetch(`/appManger/getApp?pageNum=1`)
-const getNovelList = params => getFetch(`/content/getNovelById?NovelId=${params.id}?pageNum=1&limit=8`)
+const getNovelList = params => getFetch(`/content/getNovel?catalogId=${params.id}&pageNum=1&limit=8`)
+const getNovelDetail = params => getFetch(`/content/getNovelById?NovelId=${params.id}`)
 const getConfig = params => getFetch(`/user/getInitialization?type=${params.type}`)
 
 
@@ -25,5 +26,6 @@ export default {
   moviesNum,
   appList,
   getNovelList,
+  getNovelDetail,
   getConfig
 }

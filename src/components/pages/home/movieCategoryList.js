@@ -2,7 +2,7 @@
  * Created by guangqiang on 2017/10/10.
  */
 import React, {Component} from 'react'
-import {View, Text, TouchableOpacity, Image, ListView, StyleSheet, FlatList} from 'react-native'
+import {View, Text, TouchableOpacity, Image, ListView, StyleSheet, FlatList, RefreshControl} from 'react-native'
 import {commonStyle} from '../../../utils/commonStyle'
 import {BaseComponent} from '../../base/baseComponent'
 import {Icon} from '../../../utils/icon'
@@ -109,6 +109,10 @@ export default class TrailerList extends BaseComponent {
     )
   }
 
+  onRefresh = ()=>{
+    coonsole.log('onRefresh');
+  }
+
   _render() {
 
     return (
@@ -120,12 +124,12 @@ export default class TrailerList extends BaseComponent {
           columnWrapperStyle={styles.list}
           numColumns={2}
           keyExtractor = {this._extraUniqueKey}// 每个item的key
-          onEndReached={()=>{
-            // 到达底部，加载更多列表项
-            // this.setState({
-            //   listData: this.state.listData.concat(getData())
-            // });
-          }}
+          refreshControl={<RefreshControl
+            refreshing={false}
+            onRefresh={()=>{()=>this.onRefresh()}}
+            tintColor='red'
+            colors={['#ff0000', '#00ff00', '#0000ff']}
+            progressBackgroundColor="gray"/>}
         />
       )}
       </View>

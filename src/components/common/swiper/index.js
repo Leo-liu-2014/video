@@ -34,21 +34,18 @@ export default class Swiper extends Component {
             containerStyle={styles.pagenation}
             dotStyle={{
                 width: 10,
-                height: 10,
+                height: 4,
                 borderRadius: 5,
-                marginHorizontal: 4,
+                marginHorizontal: 0,
                 backgroundColor: '#f25d8e'
             }}
             inactiveDotStyle={{
                 // Define styles for inactive dots here
-                width: 10,
-                height: 10,
                 borderRadius: 5,
-                marginHorizontal: 4,
+                marginHorizontal: 0,
                 backgroundColor: '#fff'
             }}
             inactiveDotOpacity={1}
-            inactiveDotScale={.6}
           />
       );
   }
@@ -77,10 +74,8 @@ export default class Swiper extends Component {
               itemWidth={deviceInfo.deviceWidth}
               bullets={true}  //显示小圆点
               onSnapToItem={(index) => this.setState({ activeSlide: index }) }
-              height={150}
             />
             {this.pagination}
-
       </View>
     )
   }
@@ -89,6 +84,7 @@ export default class Swiper extends Component {
 var styles = StyleSheet.create({
   content: {
     flex:1,
+    height:150,
   },
   img: {
     width:(deviceInfo.deviceWidth),
@@ -96,12 +92,9 @@ var styles = StyleSheet.create({
   },
   pagenation: {
     position:"absolute",
-    alignItems:"center",
-    justifyContent:"center",
+    // alignItems:"center",
+    // justifyContent:"center",
     top:100,
-    left:"30%"
+    right:10,
   },
-  pagenationSlide: {
-
-  }
 });

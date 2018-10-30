@@ -2,7 +2,7 @@
  * Created by guangqiang on 2017/9/4.
  */
 import React from 'react'
-import {View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, ListView} from 'react-native'
+import {View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, FlatList} from 'react-native'
 import {BaseComponent} from '../../base/baseComponent'
 import {connect} from 'react-redux'
 import Action from '../../../actions'
@@ -14,105 +14,22 @@ import {Actions} from 'react-native-router-flux'
 import Swiper from '../../common/swiper'
 import action from '../../../actionCreators/category'
 
-const reading = [
-  {
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },
-  {
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },
-  {
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },
-  {
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },
-  {
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },{
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },
-  {
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },
-  {
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },
-  {
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },
-  {
-    title:"最后的审判22",
-    excerpt:"世界上有很多错事丑事脏事，但爱，永远不是错。",
-    maketime:"2018-10-16 06:00:00"
-  },
-]
-
 class Reading extends BaseComponent {
   constructor(props) {
     super(props)
-    this.renderPage = this.renderPage.bind(this)
-    this.imgClick = this.imgClick.bind(this)
-    this.timer = null
     this.state = {
-      dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
-      bannerList: [],
-      swiperShow: false,
-      imageIndex: 0,
-      articleLength: 0
+      dataSource: [],
     }
   }
 
   componentDidMount() {
-    
-    // this.setState({
-    //   dataSource: this.state.dataSource.cloneWithRows(reading),
-    // })
-
     Promise.resolve(action.getNovelList({id:8})).then(response => {
       if(response){
-        this.timer = setTimeout(() => {
-          this.setState({
-              dataSource: this.state.dataSource.cloneWithRows(response.result.data)
-          })
-        }, (10))
+        this.setState({
+          dataSource: response.result.date
+        })
       }
-    }).catch(()=>{
     })
-
-    // Promise.all([action.readingBannerList(), action.readingArticleList()]).then(response => {
-
-    //   console.log(response, 333)
-    //   this.timer = setTimeout(() => {
-    //     this.setState({
-    //       bannerList: response[0].data,
-    //       swiperShow: true,
-    //       articleLength:response[1].data.length
-    //     })
-    //   }, (10))
-    // })
-  }
-
-  componentWillUnmount() {
-    this.timer && clearTimeout(this.timer)
   }
 
   navigationBarProps() {
@@ -122,72 +39,46 @@ class Reading extends BaseComponent {
     }
   }
 
-  pushDetail(data) {
-    // let data = this.props.rowData
-    // if (data.content_id) {
-    //   Actions.essayDetail({id: data.content_id})
-    // } else if (data.serial_id) {
-    //   Actions.serialDetail({id: data.id})
-    // } else if (data.question_id) {
-    //   Actions.questionDetail({id: data.question_id})
-    // }
-    console.log(data, 123123)
-    Actions.essayDetail({id: 128})
-  }
-
-  renderPage(data, sectionId, rowId) {
+  renderPage(data) {
     return (
       <TouchableOpacity
         style={styles.radingItem}
-        onPress={() => this.pushDetail(data)}
+        onPress={() => 
+          // Actions.webView({uri: 'http://www.jianshu.com/u/023338566ca5', title: '简书'})
+          Actions.essayDetail({id: data.item.id, title: data.item.title})
+        }
       >
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{flex: 1, fontSize: 15, marginBottom: 5, color: commonStyle.textBlockColor}}>{data.title}</Text>
+          <Text style={{flex: 1, fontSize: 15, marginBottom: 5, color: commonStyle.textBlockColor}}>{data.item.title}</Text>
         </View>
-        <Text style={{fontSize: 13, marginBottom: 5}}>{data.excerpt}</Text>
-        <Text style={{fontSize: 13}}>{data.maketime}</Text>
+        <Text style={{fontSize: 13, marginBottom: 5}}>{data.item.summary}</Text>
+        <Text style={{fontSize: 13}}>{data.item.createtime}</Text>
       </TouchableOpacity>
     )
   }
 
-  imgClick(i, e) {
-    let data  = this.state.bannerList[i]
-    Actions.bannerDetail({data: data})
-  }
-
-  renderImg() {
-    tempArr = []
-    let picArr = this.state.bannerList || []
-    for (var i = 0; i < picArr.length; i++) {
-      tempArr.push(
-        <TouchableOpacity ref={i} key={i} onPress={this.imgClick.bind(this, i)}>
-          <Image style={{height: 150}}
-                 source={{uri: picArr[i].cover}}/>
-        </TouchableOpacity>
-      )
-    }
-    return tempArr
-  }
-
-  _onChangePage(index) {
-    if (index === this.state.articleLength -1) {
-      Actions.readingTab()
-    }
-  }
-
   _render() {
-    console.log(this.state, 'this.state')
     return (
       <View style={styles.container}>
         <ScrollView
           removeClippedSubviews={false}
         >
-          <Swiper type="app" />
-          
+          <Swiper type="reading" />
           <View style={{flex:1,paddingLeft:10,paddingRight:10}}>
-            <ListView
+            {/* <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderPage}
+            /> */}
+            <FlatList
+             data = {this.state.dataSource}
+             renderItem={this.renderPage}
+             keyExtractor = {(index, item) => {return "index"+index+item}}// 每个item的key
+             onEndReached={()=>{
+               // 到达底部，加载更多列表项
+               // this.setState({
+               //   listData: this.state.listData.concat(getData())
+               // });
+             }}
             />
           </View>
         </ScrollView>

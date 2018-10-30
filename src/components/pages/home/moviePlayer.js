@@ -215,7 +215,7 @@ export default class MoviePlayer extends Component {
               <View style={styles.navContentStyle}>
                 <View style={{flexDirection: 'row', alignItems: commonStyle.center, flex: 1}}>
                   <TouchableOpacity
-                    style={{backgroundColor: commonStyle.clear}}
+                    style={{backgroundColor: commonStyle.clear, paddingLeft:5, paddingRight:5}}
                     onPress={orientation === 'PORTRAIT' ? () => Actions.pop() : Orientation.lockToPortrait}>
                     <Icon name={'oneIcon|nav_back_o'} size={18} color={commonStyle.white}/>
                   </TouchableOpacity>

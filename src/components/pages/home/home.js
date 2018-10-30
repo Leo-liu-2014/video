@@ -31,17 +31,19 @@ class Home extends PureComponent {
   }
 
   componentDidMount() {
-    Promise.resolve(action.catatList())
+    try{
+      Promise.resolve(action.catatList())
         .then(response => {
-              this.timer = setTimeout(
-                  () => {
-                      this.setState({
-                        categoryList: response.result.data,
-                        init: true
-                      })
-                    },
-                  (10))
-            })
+            this.timer = setTimeout(
+              () => {
+                  this.setState({
+                    categoryList: response.result.data,
+                    init: true
+                  })
+                },
+              (10))
+          })
+    }catch(e){}
   }
 
   tabArr = [
@@ -66,7 +68,7 @@ class Home extends PureComponent {
           onChangeTab={(obj) => {
           }}
           onScroll={(position) => { }}
-          locked={true}
+          locked={false}
           initialPage={0}
           page={0}
         >

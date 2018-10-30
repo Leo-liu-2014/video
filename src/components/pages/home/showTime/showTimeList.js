@@ -191,7 +191,6 @@ const styles = StyleSheet.create({
     backgroundColor: commonStyle.white,
     paddingLeft: 10, 
     paddingRight: 10,
-    paddingTop:20,
   },
   tabTitle: {
       flexDirection:'row',  

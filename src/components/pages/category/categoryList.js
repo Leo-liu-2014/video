@@ -25,10 +25,10 @@ export default class CategoryList extends BaseComponent  {
   }
 
   componentDidMount() {
-    Promise.all([action.catatList()]).then(response => {
+    Promise.resolve(action.catatList()).then(response => {
       this.timer = setTimeout(() => {
         this.setState({
-          dataSource: response[0].result.data
+          dataSource: response.result.data
         })
       }, (10))
     })
@@ -58,7 +58,7 @@ export default class CategoryList extends BaseComponent  {
 
   _renderEmpty() {
     return(
-      <View>
+      <View style={{flex:1}}>
         <Text>努力加载中！</Text>
       </View>
     )
@@ -66,7 +66,7 @@ export default class CategoryList extends BaseComponent  {
 
   _render() {
     const { dataSource } = this.state
-    if(dataSource == ""){
+    if(dataSource.length == 0){
       this._renderEmpty()
     }
     return (
