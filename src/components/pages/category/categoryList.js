@@ -58,15 +58,16 @@ export default class CategoryList extends BaseComponent  {
 
   _renderEmpty() {
     return(
-      <View style={{flex:1}}>
-        <Text>努力加载中！</Text>
+      <View style={styles.empty}>
+        <Text>正在拼命加载中</Text>
       </View>
     )
   }
 
   _render() {
     const { dataSource } = this.state
-    if(dataSource.length == 0){
+    console.log(dataSource == "", 9876788)
+    if(dataSource.length == ""){
       this._renderEmpty()
     }
     return (
@@ -74,12 +75,6 @@ export default class CategoryList extends BaseComponent  {
              data = {this.state.dataSource}
              renderItem={this.renderRow}
              keyExtractor = {this._extraUniqueKey}// 每个item的key
-             onEndReached={()=>{
-               // 到达底部，加载更多列表项
-               // this.setState({
-               //   listData: this.state.listData.concat(getData())
-               // });
-             }}
           />
 
     )

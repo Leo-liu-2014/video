@@ -68,7 +68,6 @@ export default class ShowTimeList extends Component {
              columnWrapperStyle={styles.list}
              numColumns={2}
              keyExtractor = {this._extraUniqueKey}// 每个item的key
-             ListEmptyComponent={this._renderEmpty}
              onEndReached={()=>{
                // 到达底部，加载更多列表项
                // this.setState({
@@ -161,7 +160,7 @@ export default class ShowTimeList extends Component {
   _renderEmpty() {
     return(
       <View style={styles.empty}>
-        <Text>暂无数据！</Text>
+        <Text>正在拼命加载中</Text>
       </View>
     )
   }
@@ -180,7 +179,7 @@ export default class ShowTimeList extends Component {
     const { refreshing, dataSource } = this.state
     const { id } = this.props
     return (
-      <View style={styles.content}>
+      <View style={{flex:1}}>
         <ScrollView 
           style={{ flex: 1 }}
           refreshControl={
@@ -194,7 +193,9 @@ export default class ShowTimeList extends Component {
             />
           }>
           {id == 1 ? <Swiper type="home" />:null}
-          {this.renderListView(dataSource)}
+          <View style={styles.content}>
+            {dataSource==""?this._renderEmpty():this.renderListView(dataSource)}
+          </View>
         </ScrollView>
       </View>
     )
