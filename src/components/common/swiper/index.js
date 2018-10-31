@@ -65,7 +65,7 @@ export default class Swiper extends Component {
   render() {
     
     return (
-      <View style={styles.content}>
+      <View>
         <Carousel
               ref={(c) => { this._carousel = c; }}
               data={data}
@@ -82,10 +82,6 @@ export default class Swiper extends Component {
 }
 
 var styles = StyleSheet.create({
-  content: {
-    flex:1,
-    height:150,
-  },
   img: {
     width:(deviceInfo.deviceWidth),
     height:150

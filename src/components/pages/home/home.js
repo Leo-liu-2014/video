@@ -2,7 +2,7 @@
  * Created by guangqiang on 2017/9/4.
  */
 import React, {PureComponent} from 'react'
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, RefreshControl} from 'react-native'
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view'
 import {connect} from 'react-redux'
 
@@ -10,40 +10,36 @@ import action from '../../../actionCreators/category'
 import Action from '../../../actions'
 import {commonStyle} from '../../../utils/commonStyle'
 import deviceInfo from '../../../utils/deviceInfo'
-import Swiper from '../../common/swiper'
-
 import ShowTimeList from './showTime/showTimeList'
 
 class Home extends PureComponent {
   constructor(props) {
     super(props) 
     this.state = {
-      refreshing: false,
-      hasMore: true,
       showTimeList: [],
       comeingNewList: [],
       attentionList: [],
       bannerList: [],
       showSwiper: true,
       categoryList: [],
-      init: false
+      init: false,
+      listData:[]
     }
   }
 
   componentDidMount() {
     try{
       Promise.resolve(action.catatList())
-      
         .then(response => {
-          console.log(response, 333)
+          if(response){
             this.timer = setTimeout(
               () => {
                   this.setState({
                     categoryList: response.result.data,
-                    init: true
                   })
                 },
               (10))
+            }
           })
     }catch(e){}
   }
@@ -56,10 +52,8 @@ class Home extends PureComponent {
   ];
 
   render() {
-    const {categoryList} = this.state;
     return (
-      <View style={{
-        flex: 1 }}>
+      <View style={{flex: 1 }}>
         <ScrollableTabView
           ref = {'tabView'} 
           renderTabBar = { () => < ScrollableTabBar style = {{ height: 45, backgroundColor: '#fff' }} />}
@@ -77,10 +71,8 @@ class Home extends PureComponent {
           {this.tabArr.map((item, index) => {
               return (
                 <View style={styles.containerStyle} key={index} tabLabel={item.name}>
-                  <ScrollView style={{ flex: 1 }}>
-                    {item.id == 1 ? <Swiper type="home" />:null}
-                    <ShowTimeList title = {item.name} id = {item.id} />
-                  </ScrollView>
+                  <ShowTimeList title= {item.name} id={item.id} />
+                  {/* <Text>1111</Text> */}
                 </View>
               )
             })}

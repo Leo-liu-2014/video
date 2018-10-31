@@ -1,46 +1,43 @@
 import React, {Component} from 'react'
-import {View, ListView, Image, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, SectionList} from 'react-native'
+import {View, ListView, Image, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, SectionList, RefreshControl} from 'react-native'
 import {commonStyle} from '../../../../utils/commonStyle'
 import {Actions} from 'react-native-router-flux'
 import ShowTimeCell from './showTimeCell'
 import deviceInfo from '../../../../utils/deviceInfo'
 
 import action from '../../../../actionCreators/category'
+import Swiper from '../../../common/swiper'
 
 export default class ShowTimeList extends Component {
   
   constructor(props) {
     super(props);
     this.state = {
-      dataSource: null,
-      data: [],
-      list: []
+      dataSource: [],
+      refreshing: false
     }
   }
 
   componentDidMount(){
+      //初始化数据
+      this.getAllData()
+  }
+  getAllData = () =>{
     const { id, title } = this.props;
+
     if(id == 1){
-      this.setState({
-        data: this._getRecommendListData(id)
-      })
+      this._getRecommendListData(id)
+      // this.setState({
+      //   dataSource: this._getRecommendListData(id)
+      // })
     }else{
-      this.setState({
-        list: this._getListData(id)
-      })
+      this._getListData(id)
+      // this.setState({
+      //   dataSource: this._getListData(id)
+      // })
     }
   }
   renderListView(dataSource){
-
-    // if(this.props.type==='recommend'){
-    //   return(
-    //     <ListView
-    //       dataSource={dataSource}
-    //       renderRow={this._renderRow}
-    //       renderSectionHeader={this._renderSectionHeader}
-    //     />
-    //   )
-    // }
     const { id, title } = this.props;
     if(id == 1){
       return(
@@ -55,8 +52,12 @@ export default class ShowTimeList extends Component {
               // contentContainerStyle={styles.list}
               // horizontal={true}
               // pageSize={4}  // 配置pageSize确认网格数量
+              refreshing={false}
               initialNumToRender={2}
               sections={ dataSource }
+              onRefresh={()=>{
+                console.log('开始刷新');
+              }}
           />
        )
     }else{
@@ -67,6 +68,7 @@ export default class ShowTimeList extends Component {
              columnWrapperStyle={styles.list}
              numColumns={2}
              keyExtractor = {this._extraUniqueKey}// 每个item的key
+             ListEmptyComponent={this._renderEmpty}
              onEndReached={()=>{
                // 到达底部，加载更多列表项
                // this.setState({
@@ -79,7 +81,7 @@ export default class ShowTimeList extends Component {
   }
 
   _getRecommendListData = id => {
-    let data = [];
+    let data = []
     Promise.resolve(action.lableList({parentId:id})).then(response => {
       let listData = response.result.data
       listData.map(item => {
@@ -92,20 +94,23 @@ export default class ShowTimeList extends Component {
             })
         }))
       })
+    }).then(()=>{
+      setTimeout(()=>{
+        this.setState({
+          dataSource: data
+        })
+      },10)
     })
-    return data
   }
 
   _getListData = id => {
-    let data = [];
     Promise.resolve(action.contentList({categoryId:id,limt:4,pageNum:1})).then(response => {
-    }).catch((error) => {
-      console.error(error);
+      setTimeout(()=>{
+        this.setState({
+          dataSource: response.result.data
+        })
+      },10)
     })
-    return data
-  }
-
-  getListData = () => {
   }
 
   _renderItem = ({ item }) => {
@@ -114,7 +119,6 @@ export default class ShowTimeList extends Component {
         <View  style={styles.empty}>
             <Text>暂无数据……</Text>
         </View>
-  
       )
     }
     return (
@@ -123,7 +127,6 @@ export default class ShowTimeList extends Component {
                 item.map((item, i) => this.renderExpenseItem(item, i))
             }
         </View>
-  
     )
   };
 
@@ -162,22 +165,50 @@ export default class ShowTimeList extends Component {
       </View>
     )
   }
+  _onRefresh = () =>{
+    const { id, title } = this.props;
+    if(id == 1){
+      this._getRecommendListData(id);
+      return 
+    }
+    this._getListData(id)
+    this.setState({
+      refreshing: false
+    })
+  }
   render() {
-
-    const { data, list } = this.state
-    // if (data =="") {
-    //   return (
-    //       <View style={{flex:1}}>{this._renderEmpty()}</View>
-    //   );
-    // }
+    const { refreshing, dataSource } = this.state
+    const { id } = this.props
     return (
       <View style={styles.content}>
-        {this.renderListView(data)}
+        <ScrollView 
+          style={{ flex: 1 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={()=>this._onRefresh()}
+              tintColor={commonStyle.themeColor}
+              title="Loading..."
+              colors={[commonStyle.themeColor]}
+              progressBackgroundColor="#fff"
+            />
+          }>
+          {id == 1 ? <Swiper type="home" />:null}
+          {this.renderListView(dataSource)}
+        </ScrollView>
       </View>
     )
   }
   
-  _renderRow = (data, sectionId) => {
+  _renderRow = (data) => {
+    if(data == ""){
+      return (
+        <View  style={styles.empty}>
+            <Text>暂无数据……</Text>
+        </View>
+  
+      )
+    }
     return (
         <ShowTimeCell key={data.index} index={data.index} rowData={data.item} />
     )

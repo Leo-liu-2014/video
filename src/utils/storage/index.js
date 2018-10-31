@@ -74,7 +74,6 @@ const _storage = {
         someFlag: true,
       }
     }).then(ret => {
-      console.log(ret,11111)
       // 如果找到数据，则在then方法中返回
       // 注意：这是异步返回的结果（不了解异步请自行搜索学习）
       // 你只能在then这个方法内继续处理ret数据

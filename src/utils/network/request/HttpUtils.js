@@ -75,7 +75,7 @@ export default class HttpUtils extends Component {
    * @returns {Promise}
    */
   static getRequest = (url, params = {}) => {
-    RootHUD.show()
+    // RootHUD.show()
     return timeoutFetch(fetch(handleUrl(url)(params), {
       method: 'GET',
       headers: header
@@ -88,7 +88,7 @@ export default class HttpUtils extends Component {
         }
       })
       .then((response) => {
-        RootHUD.hidden()
+        // RootHUD.hidden()
         // response.code：是与服务器端约定code：200表示请求成功，非200表示请求失败，message：请求失败内容
         if (response && response.res === responseType.RESPONSE_SUCCESS) {
           return response
