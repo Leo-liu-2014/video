@@ -19,12 +19,15 @@ export default class CategoryList extends BaseComponent  {
 
   navigationBarProps() {
     return {
-      title: this.props.title,
+      title: this.props.title || "所有分类",
+      hiddenLeftItem: true,
     }
   }
 
   componentDidMount() {
-    Promise.all([action.lableList({parentId:this.props.parentId})]).then(response => {
+    console.log(this.props)
+    let parentId = this.props.parentId ? this.props.parentId : 71;
+    Promise.all([action.lableList({parentId:parentId})]).then(response => {
       this.timer = setTimeout(() => {
         this.setState({
           dataSource: this.state.dataSource.cloneWithRows(response[0].result.data),

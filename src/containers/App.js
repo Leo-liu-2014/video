@@ -22,6 +22,7 @@ import ApplicationDetail from '../components/pages/application/applicationDetail
 
 import MoviePlayer from '../components/pages/home/moviePlayer'
 import MovieCategoryList from '../components/pages/home/movieCategoryList'
+import Collection from '../components/pages/collection/index'
 
 
 import CategoryListLabel from '../components/pages/category/categoryListLabel'
@@ -36,6 +37,8 @@ import UserLogin from '../components/pages/me/login/login'
 import UserRegister from '../components/pages/me/register/register'
 import Setting from '../components/pages/me/setting'
 import UserInfo from '../components/pages/me/userInfo'
+import Vip from '../components/pages/me/vip'
+import ChangePwd from '../components/pages/me/changePwd'
 
 import SelectorList from '../components/common/selector'
 import WebView from '../components/common/webView'
@@ -133,6 +136,15 @@ const scenes = Actions.create(
 
           <Scene key='userInfo' hideNavBar component={UserInfo}/>
 
+          <Scene key='vip' hideNavBar component={Vip}/>
+
+          <Scene key='changePwd' hideNavBar component={ChangePwd}/>
+
+          <Scene key='collection' hideNavBar component={Collection}/>
+          
+          
+
+
           <Scene key="author" title="作者" hideNavBar component={Author}/>
 
           <Scene key='selector' hideNavBar component={SelectorList}/>
@@ -159,8 +171,10 @@ class App extends Component {
   // }
   componentWillMount(){
       storage.load('userInfo', (response) => {
+        console.log(response, '')
         if(!response){
-          Actions.userLogin()
+          //Actions.userLogin()
+          Actions.userRegister();
         }
       })
     

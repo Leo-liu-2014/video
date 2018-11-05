@@ -2,7 +2,7 @@
  * Created by guangqiang on 2017/9/7.
  */
 import React, {Component} from 'react'
-import {View, Text, StyleSheet, ListView, Image, TouchableOpacity, SectionList, ScrollView} from 'react-native'
+import {View, Text, StyleSheet, ListView, Image, TouchableOpacity, SectionList, ScrollView, Linking} from 'react-native'
 import {Actions} from 'react-native-router-flux'
 import {commonStyle} from '../../../utils/commonStyle'
 import {BaseComponent} from '../../base/baseComponent'
@@ -91,7 +91,9 @@ export default class CategoryList extends BaseComponent  {
 
   renderExpenseItem(item, i) {
       return (
-        <TouchableOpacity key={i} onPress={() => {}}>
+        <TouchableOpacity key={i} onPress={() => {
+            Linking.openURL('https:www.163.com')
+        }}>
             <View style={styles.row}>
                   <Image
                   style={styles.img}

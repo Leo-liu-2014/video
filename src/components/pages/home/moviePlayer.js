@@ -207,14 +207,14 @@ export default class MoviePlayer extends Component {
               onBuffer={(data) => this.onBuffer(data)}
               onTimedMetadata={(data) => this.onTimedMetadata(data)}
               style={[styles.videoPlayer]}
-          />
+          /> 
           {
               isloading?<View style={styles.loading}><Text style={{color:"#fff"}}>视频加载中……</Text></View>:null
           }
           
           {
-            !isLock ?
-              <View style={styles.navContentStyle}>
+            this.state.isTouchedScreen && !isLock  && !isloading ?
+              <View style={styles.navContentHeaderStyle}>
                 <View style={{flexDirection: 'row', alignItems: commonStyle.center, flex: 1}}>
                   <TouchableOpacity
                     style={{backgroundColor: commonStyle.clear, paddingLeft:5, paddingRight:5}}
@@ -278,7 +278,7 @@ export default class MoviePlayer extends Component {
         </TouchableOpacity>
         :(
           <View style={{flex:1}}>
-            <View style={styles.navContentStyle}>
+            <View style={styles.navContentHeaderStyle}>
                   <View style={{flexDirection: 'row', alignItems: commonStyle.center, flex: 1}}>
                     <TouchableOpacity
                       style={{backgroundColor: commonStyle.clear}}
@@ -336,11 +336,12 @@ const styles = StyleSheet.create({
     left: (deviceInfo.deviceWidth / 2.5)
   },
   videoPlayer: {
-    position: 'absolute',
-    top: 44,
-    left: 0,
-    bottom: 0,
-    right: 0,
+    flex:1
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    // bottom: 0,
+    // right: 0,
   },
   navContentStyle: {
     height: 44,
@@ -348,7 +349,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    backgroundColor: commonStyle.black
+    backgroundColor: commonStyle.black,
+    
+  },
+  navContentHeaderStyle: {
+    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    position:'absolute',
+    top:0,
+    width:deviceInfo.deviceWidth,
   },
   toolBarStyle: {
     backgroundColor: commonStyle.black,
@@ -357,7 +369,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: 'space-around',
     marginTop: 10,
-    height: 30
+    height: 30,
+    // position:"absolute",
+    // top:300
   },
   timeStyle: {
     width: 35,

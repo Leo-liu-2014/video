@@ -3,15 +3,15 @@
  */
 import React from 'react'
 import {View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, ScrollView, NativeModules, Platform, Alert} from 'react-native'
-import {BaseComponent} from '../../../base/baseComponent'
-import {Icon, deviceInfo, Toast, commonStyle, storage} from '../../../../utils'
+import {BaseComponent} from '../../base/baseComponent'
+import {Icon, deviceInfo, Toast, commonStyle, storage} from '../../../utils'
 import {Actions} from 'react-native-router-flux'
-import {sharePlatform} from '../../../../constants/commonType'
+import {sharePlatform} from '../../../constants/commonType'
 
 import { Button } from 'react-native-elements';
 
 
-import action from '../../../../actionCreators/me'
+import action from '../../../actionCreators/me'
 
 
 const LoginModule = NativeModules.loginModule
@@ -24,6 +24,7 @@ export default class Login extends BaseComponent {
     this.state = {
       userName: '',
       pwd: '',
+      pwd1: '',
       secret: true,
       loading: false
     }
@@ -31,7 +32,7 @@ export default class Login extends BaseComponent {
 
   navigationBarProps() {
     return {
-      title: '登录',
+      title: '修改密码',
       leftIcon: {
         name: 'nav_back_o',
         size: 20,
@@ -50,24 +51,26 @@ export default class Login extends BaseComponent {
   renderInput() {
     return (
       <View style={{marginTop: 10}}>
-        <View style={{flexDirection: 'row', padding: 10, backgroundColor: commonStyle.white, borderBottomWidth: commonStyle.lineWidth, borderBottomColor: commonStyle.lineColor, alignItems: commonStyle.center}}>
-          <Icon name={`oneIcon|user_name_o`} size={20} color={commonStyle.themeColor}/>
+        <View style={{flexDirection: 'row', paddingHorizontal: 10, backgroundColor: commonStyle.white, paddingVertical: 6, alignItems: commonStyle.center}}>
+          <Icon name={`oneIcon|pwd_o`} size={20} color={commonStyle.themeColor}/>
           <TextInput
-            style={{flex: 1, marginHorizontal: 10, fontSize: 14}}
-            placeholder={'登录邮箱'}
+            style={{flex: 1, marginHorizontal: 10,  fontSize: 14}}
+            placeholder={'原密码'}
+            secureTextEntry={this.state.secret}
             onChangeText={text => {
               text = text.replace(/ /g, '_')
-              this.setState({userName: text})
+              this.setState({oldPwd: text})
             }}
             underlineColorAndroid='transparent'
-            value={this.state.userName}
+            selectionColor={commonStyle.themeColor}
+            value={this.state.oldPwd}
           />
         </View>
         <View style={{flexDirection: 'row', paddingHorizontal: 10, backgroundColor: commonStyle.white, paddingVertical: 6, alignItems: commonStyle.center}}>
           <Icon name={`oneIcon|pwd_o`} size={20} color={commonStyle.themeColor}/>
           <TextInput
             style={{flex: 1, marginHorizontal: 10,  fontSize: 14}}
-            placeholder={'密码'}
+            placeholder={'新密码'}
             secureTextEntry={this.state.secret}
             onChangeText={text => {
               text = text.replace(/ /g, '_')
@@ -76,6 +79,21 @@ export default class Login extends BaseComponent {
             underlineColorAndroid='transparent'
             selectionColor={commonStyle.themeColor}
             value={this.state.pwd}
+          />
+        </View>
+        <View style={{flexDirection: 'row', paddingHorizontal: 10, backgroundColor: commonStyle.white, paddingVertical: 6, alignItems: commonStyle.center}}>
+          <Icon name={`oneIcon|pwd_o`} size={20} color={commonStyle.themeColor}/>
+          <TextInput
+            style={{flex: 1, marginHorizontal: 10,  fontSize: 14}}
+            placeholder={'确认密码'}
+            secureTextEntry={this.state.secret}
+            onChangeText={text => {
+              text = text.replace(/ /g, '_')
+              this.setState({pwd1: text})
+            }}
+            underlineColorAndroid='transparent'
+            selectionColor={commonStyle.themeColor}
+            value={this.state.pwd1}
           />
         </View>
       </View>
@@ -140,7 +158,7 @@ export default class Login extends BaseComponent {
           <Text style={{color: commonStyle.white, fontSize: 17}}>登录</Text>
         </TouchableOpacity> */}
         <Button
-          title="登 录"
+          title="修改密码"
           loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
           buttonStyle={{
             backgroundColor: commonStyle.themeColor,
@@ -154,14 +172,6 @@ export default class Login extends BaseComponent {
           onPress= {()=>this.loginHandle()}
           containerStyle={{ marginTop: 20 }}
         />
-        <View style={{flexDirection: commonStyle.row, alignItems: commonStyle.center, marginTop: 15, marginHorizontal: 30, justifyContent: commonStyle.between}}>
-          <TouchableOpacity onPress={() => Actions.userRegister()}>
-            <Text style={{color: commonStyle.themeColor, fontSize: 14, fontWeight: 'bold'}}>免费注册</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={{color: commonStyle.themeColor, fontSize: 14, fontWeight: 'bold'}}>找回密码</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     )
   }

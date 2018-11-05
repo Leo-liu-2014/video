@@ -2,7 +2,7 @@
  * Created by guangqiang on 2017/10/12.
  */
 import React, {Component} from 'react'
-import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native'
+import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert} from 'react-native'
 import {connect} from 'react-redux'
 import Action from '../../../actions'
 import {BaseComponent} from '../../base/baseComponent'
@@ -10,7 +10,8 @@ import {commonStyle} from '../../../utils/commonStyle'
 import {Actions} from 'react-native-router-flux'
 import {Icon, storage} from '../../../utils'
 import {ShareModal} from '../../../components/common/shareModal'
-
+import { Button } from 'react-native-elements';
+import deviceInfo from '../../../utils/deviceInfo'
 class Me extends BaseComponent {
 
   constructor(props) {
@@ -44,7 +45,7 @@ class Me extends BaseComponent {
     storage.load('userInfo', (response) => {
       if(response){
         this.setState({
-          userInfo: response.data
+          userInfo: response
         })
         return 
       }
@@ -63,29 +64,49 @@ class Me extends BaseComponent {
     }
   }
 
+  logoutHandle() {
+
+    Alert.alert(
+      '退出登录',
+      `确定要退出登录吗？`,
+      [
+        {text: '确定', onPress: () => {
+            console.log('退出')
+            storage.remove('userInfo')
+            Actions.userLogin();
+            // Linking.openURL('https:www.baidu.com');
+          },
+        },
+        {text: '取消', onPress: () => {
+            console.log('取消')
+          },
+        },
+      ]
+    )
+
+    
+  }
+
   renderHeaderContainer() {
     const { userInfo=[] } = this.state
 
     console.log(userInfo,9)
     return (
       <View style={{flexDirection: 'row', padding: 10, alignItems: commonStyle.center, backgroundColor: commonStyle.themeColor}}>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           {
             userInfo.iconurl ? <Image style={{width: 60, height: 60, borderRadius: 30, backgroundColor: '#000'}} source={{uri: userInfo.iconurl}}/> : <Icon name={'oneIcon|avatar_o'} size={60} color={'#f8f8f8'}/>
           }
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {
-          userInfo ?
-            <View style={{marginLeft: 10, justifyContent: commonStyle.center}}>
-              <Text style={{marginBottom: 10, fontSize: 16, color: commonStyle.white}}>{userInfo.name}</Text>
-              <View style={{flexDirection: commonStyle.row, alignItems: commonStyle.center}}>
-              <Text style={{color: commonStyle.white, marginRight: 10}}>{userInfo.type!=0?"注册会员":"vip会员"}</Text>
-              {/* <Text style={{color: commonStyle.white, marginRight: 10}}>{`${data.province}-${data.city}`}</Text> */}
-                <TouchableOpacity style={styles.userInfo}>
-                  <Text style={{color: commonStyle.white, marginLeft: 5, fontSize: 12}}>性别</Text>
-                  <Icon name={`oneIcon|${userInfo.sex === 1 ? 'man_o' : 'woman_o'}`} size={15} color={commonStyle.white}/>
-                </TouchableOpacity>
-              </View>
+          userInfo!="" ?
+            <View style={{marginLeft: 10, justifyContent: commonStyle.center, alignItems:'center', width: deviceInfo.deviceWidth}}>
+              <Text style={{marginBottom: 10, fontSize: 16, color: commonStyle.white}}>邮箱：{userInfo.email}</Text>
+              <Text style={{marginBottom: 10, fontSize: 16, color: commonStyle.white}}>昵称：{userInfo.nickName}</Text>
+              <Text style={{marginBottom: 10, fontSize: 14, color: commonStyle.white}}>会员到期时间：{userInfo.endDate}</Text>
+              {/* <View style={{flexDirection: commonStyle.row, alignItems: commonStyle.center}}>
+                  <Text style={{color: commonStyle.white, marginRight: 10}}>{userInfo.type!=0?"注册会员":"vip会员"}</Text>
+              </View> */}
             </View> :
             <View style={{flexDirection: 'row', alignItems: commonStyle.center}}>
               <TouchableOpacity style={[styles.loginBtn, {backgroundColor:commonStyle.white}]} onPress={() => Actions.userLogin({callback: (type) => this.callback(type)})}>
@@ -120,29 +141,17 @@ class Me extends BaseComponent {
     )
   }
 
-  renderActivityPanel() {
-    return (
-      <View style={{flexDirection: commonStyle.row, alignItems: commonStyle.center, justifyContent: commonStyle.around, borderBottomWidth: 10, borderBottomColor: commonStyle.lineColor}}>
-        {this.renderPanelItem('优惠券', 'coupon_o', '#F6A13C')}
-        {this.renderPanelItem('口令红包', 'key_o', '#000000')}
-        {this.renderPanelItem('礼品卡', 'gift_o', '#7A5CE5')}
-        {this.renderPanelItem('时光比', 'magic_star_o', '#F8BD57')}
-        {this.renderPanelItem('余额', 'rmb_s', '#F36B42')}
-      </View>
-    )
-  }
-
   renderItem(title, icon, color, key) {
     return (
       <TouchableOpacity
         style={styles.item}
         onPress={() => key ? Actions[key]({callback: () => this.callback()}) : null}
       >
-        <View style={{flexDirection: commonStyle.row, alignItems: commonStyle.center}}>
-          <Text style={{marginRight: 5}}>{title}</Text>
+        <View style={{flexDirection: commonStyle.row, height:30, alignItems: commonStyle.center}}>
           {
             icon ? <Icon name={`oneIcon|${icon}`} size={20} color={color}/> : null
           }
+          <Text style={{marginRight: 5,marginLeft:10}}>{title}</Text>
         </View>
         <Icon name={`oneIcon|push_arror_o`} size={20} color={'#B1B1B1'}/>
       </TouchableOpacity>
@@ -152,15 +161,37 @@ class Me extends BaseComponent {
   renderList() {
     return (
       <View>
-        {this.renderItem('升级VIP')}
-        {this.renderItem('会员特权')}
-        {this.renderItem('我的积分')}
+        
+        {/* {this.renderItem('会员特权')} */}
+        {/* {this.renderItem('我的积分')} */}
         <View style={{borderTopWidth: 10, borderTopColor: commonStyle.lineColor}}>
-          {this.renderItem('我的收藏')}
-          {this.renderItem('我的推荐')}
-          {this.renderItem('设置', '', '', 'setting')}
+          {this.renderItem('会员续费','rmb_s',commonStyle.themeColor,'vip')}
+          {this.renderItem('我的收藏','gift_o',commonStyle.themeColor,'collection')}
+          {this.renderItem('修改密码','pwd_o',commonStyle.themeColor,'changePwd')}
+          
+          {/* {this.renderItem('我的推荐')} */}
+          {/* {this.renderItem('设置', '', '', 'setting')} */}
           {/* {this.renderItem('Demo集合', '', '', 'demoPage')} */}
         </View>
+      </View>
+    )
+  }
+
+  renderButton() {
+    return(
+      <View style={{flex:1,marginTop:20}}>
+        <Button
+          title="退 出"
+          buttonStyle={{
+            backgroundColor: commonStyle.themeColor,
+            height: 45,
+            borderColor: "transparent",
+            borderWidth: 0,
+            borderRadius: 10
+          }}
+          onPress= {()=>this.logoutHandle()}
+          containerStyle={{ marginTop: 20 }}
+        />
       </View>
     )
   }
@@ -173,14 +204,9 @@ class Me extends BaseComponent {
           style={styles.scStyle}
           bounces={false}>
           {this.renderHeaderContainer()}
-          {/* {this.renderActivityPanel()} */}
           {this.renderList()}
+          {this.renderButton()}
         </ScrollView>
-        {/* <ShareModal
-          visible={this.state.shareModalVisible}
-          onVisibleChange={(modalVisible) => this.setState({
-            shareModalVisible: modalVisible
-          })}/> */}
       </View>
     )
   }

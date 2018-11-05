@@ -47,6 +47,7 @@ const PATH = {
   /*-----------------------------*/
   /*s视频网站type*/
   USER_LOGIN: '/user/login',
+  USER_REGISTER: '/user/regit',
 
   /*分类相关*/
 
