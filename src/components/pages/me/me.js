@@ -12,14 +12,15 @@ import {Icon, storage} from '../../../utils'
 import {ShareModal} from '../../../components/common/shareModal'
 import { Button } from 'react-native-elements';
 import deviceInfo from '../../../utils/deviceInfo'
+import action from '../../../actionCreators/me'
+
 class Me extends BaseComponent {
 
   constructor(props) {
     super(props)
     this.scrollView = null
     this.state = {
-      userInfo: [],
-      shareModalVisible: false
+      userInfo: null,
     }
   }
 
@@ -42,16 +43,23 @@ class Me extends BaseComponent {
   }
 
   componentDidMount() {
-    storage.load('userInfo', (response) => {
+    storage.load('token', (response) => {
       if(response){
-        this.setState({
-          userInfo: response
-        })
-        return 
+        this.getUserInfo()
       }
-      this.setState({
-        userInfo: []
-      })
+    })
+      
+  }
+
+  getUserInfo() {
+    Promise.resolve(action.getuserInfo())
+    .then(response => {
+      console.log(response)
+      if(response){
+          this.setState({
+            userInfo: response.result.usertitle
+          })
+        }
     })
   }
 
@@ -88,9 +96,8 @@ class Me extends BaseComponent {
   }
 
   renderHeaderContainer() {
-    const { userInfo=[] } = this.state
+    const { userInfo } = this.state
 
-    console.log(userInfo,9)
     return (
       <View style={{flexDirection: 'row', padding: 10, alignItems: commonStyle.center, backgroundColor: commonStyle.themeColor}}>
         {/* <TouchableOpacity>
@@ -99,11 +106,12 @@ class Me extends BaseComponent {
           }
         </TouchableOpacity> */}
         {
-          userInfo!="" ?
+          userInfo ?
             <View style={{marginLeft: 10, justifyContent: commonStyle.center, alignItems:'center', width: deviceInfo.deviceWidth}}>
               <Text style={{marginBottom: 10, fontSize: 16, color: commonStyle.white}}>邮箱：{userInfo.email}</Text>
-              <Text style={{marginBottom: 10, fontSize: 16, color: commonStyle.white}}>昵称：{userInfo.nickName}</Text>
-              <Text style={{marginBottom: 10, fontSize: 14, color: commonStyle.white}}>会员到期时间：{userInfo.endDate}</Text>
+              <Text style={{marginBottom: 10, fontSize: 16, color: commonStyle.white}}>昵称：{userInfo.name}</Text>
+              {userInfo.endtime?(<Text style={{marginBottom: 10, fontSize: 14, color: commonStyle.white}}>会员到期时间：{userInfo.endtime}</Text>):null}
+              
               {/* <View style={{flexDirection: commonStyle.row, alignItems: commonStyle.center}}>
                   <Text style={{color: commonStyle.white, marginRight: 10}}>{userInfo.type!=0?"注册会员":"vip会员"}</Text>
               </View> */}
@@ -165,7 +173,7 @@ class Me extends BaseComponent {
         {/* {this.renderItem('会员特权')} */}
         {/* {this.renderItem('我的积分')} */}
         <View style={{borderTopWidth: 10, borderTopColor: commonStyle.lineColor}}>
-          {this.renderItem('会员续费','rmb_s',commonStyle.themeColor,'vip')}
+          {this.renderItem('升级VIP','rmb_s',commonStyle.themeColor,'vip')}
           {this.renderItem('我的收藏','gift_o',commonStyle.themeColor,'collection')}
           {this.renderItem('修改密码','pwd_o',commonStyle.themeColor,'changePwd')}
           
@@ -205,7 +213,7 @@ class Me extends BaseComponent {
           bounces={false}>
           {this.renderHeaderContainer()}
           {this.renderList()}
-          {this.renderButton()}
+          {this.state.userInfo?this.renderButton():null}
         </ScrollView>
       </View>
     )

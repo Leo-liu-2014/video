@@ -3,13 +3,13 @@
  */
 const host = {
   dev: {
-    API_URL: 'http://47.105.50.221',
+    API_URL: 'http://54.199.240.72',
     XIAMI_URL: 'http://xiamirun.avosapps.com',
     TIME_MOVIE_URL: 'https://api-m.mtime.cn',
     TIME_TICKET_URL: 'https://ticket-api-m.mtime.cn',
     MSITE_URL: 'https://api.douban.com',
     VENILOG_URL: 'https://api.douban.com',
-    VIDEO_URL:'http://47.105.50.221'
+    VIDEO_URL:'http://54.199.240.72'
   },
   alpha: {
     API_URL: 'http://api.xxx.com',
@@ -37,7 +37,7 @@ const host = {
   },
   prd: {
     // API_URL: 'http://v3.wufazhuce.com:8000/api',
-    API_URL: 'http://47.105.50.221',
+    API_URL: 'http://54.199.240.72',
     XIAMI_URL: 'http://xiamirun.avosapps.com',
     TIME_MOVIE_URL: 'https://api-m.mtime.cn',
     TIME_TICKET_URL: 'https://ticket-api-m.mtime.cn',

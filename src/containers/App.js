@@ -39,11 +39,13 @@ import Setting from '../components/pages/me/setting'
 import UserInfo from '../components/pages/me/userInfo'
 import Vip from '../components/pages/me/vip'
 import ChangePwd from '../components/pages/me/changePwd'
+import Search from '../components/pages/search/index'
 
 import SelectorList from '../components/common/selector'
 import WebView from '../components/common/webView'
 
-//import SplashScreen from '../native_modules/SplashScreen';
+import SplashScreen from 'react-native-splash-screen'
+
 import AppInfo from '../../config/index';
 
 // 消息通知栏组件
@@ -141,7 +143,18 @@ const scenes = Actions.create(
           <Scene key='changePwd' hideNavBar component={ChangePwd}/>
 
           <Scene key='collection' hideNavBar component={Collection}/>
+
           
+          {/* <Scene key='search' hideNavBar component={connect(
+            state => state.me.register,
+            Action.dispatch('search')
+          )(Search)}/> */}
+
+          <Scene key="search" hideNavBar component={connect(
+            (state) => state.movie.movieList,
+            Action.dispatch('movie')
+          )(Search)}/>
+
           
 
 
@@ -170,54 +183,74 @@ class App extends Component {
   //       SplashScreen.hide();
   // }
   componentWillMount(){
-      storage.load('userInfo', (response) => {
-        console.log(response, '')
-        if(!response){
-          //Actions.userLogin()
-          Actions.userRegister();
-        }
-      })
-    
-    NetInfo.isConnected.fetch().then(isConnected => {
-      console.log('First, is ' + (isConnected ? 'online' : 'offline'));
-    });
-    function handleFirstConnectivityChange(isConnected) {
-      console.log('Then, is ' + (isConnected ? 'online' : 'offline'));
-      NetInfo.isConnected.removeEventListener(
-        'connectionChange',
-        handleFirstConnectivityChange
-      );
-    }
-    NetInfo.isConnected.addEventListener(
-      'connectionChange',
-      handleFirstConnectivityChange
-    );
-  }
-  componentDidMount(){
     
     /* 版本检查 */
     const devices = Platform.OS==="android"?1:0;
+
+    Promise.resolve(action.getConfig({type:devices})).then(response => {
+      const { versions, domain, necessary, versionurl } = response.result.data
+      console.log(versions != AppInfo.appVersion, '99876')
+      if(versions != AppInfo.appVersion){
+          Alert.alert(
+          '更新通知',
+          `当前版本：${AppInfo.appVersion}，最新版本${versions}`,
+          [
+            {text: 'OK', onPress: () => {
+              Linking.openURL(`${versionurl}/web/app-release.apk`);
+            }},
+          ]
+        )
+        return 
+      }
+      
+      //把接口域名和资源域名写到localstoage里, 每次初始化的时候更新
+
+      if( domain != "" || domain){
+        storage.save('domain',domain)
+      }
+
+      if(versionurl !='' || versionurl){
+        storage.save('static',versionurl)
+      }
+
+      SplashScreen.hide();
+
+    }).catch((err)=>{
+      console.log(err)
+    })
+    
+    // NetInfo.isConnected.fetch().then(isConnected => {
+    //   console.log('First, is ' + (isConnected ? 'online' : 'offline'));
+    // });
+    // function handleFirstConnectivityChange(isConnected) {
+    //   console.log('Then, is ' + (isConnected ? 'online' : 'offline'));
+    //   NetInfo.isConnected.removeEventListener(
+    //     'connectionChange',
+    //     handleFirstConnectivityChange
+    //   );
+    // }
+    // NetInfo.isConnected.addEventListener(
+    //   'connectionChange',
+    //   handleFirstConnectivityChange
+    // );
+  }
+  componentDidMount(){
+    
+    storage.load('token', (response) => {
+      if(!response){
+        Actions.userLogin()
+        // Actions.userRegister();
+      }
+    })
+
+    
 
     setTimeout(()=>{
       // Actions.message("网站正式使用了！！！谢谢支持")
       // Actions.blur()
     },200)
-    Promise.resolve(action.getConfig({type:devices})).then(response => {
-      //const { version, domain, necessary } = response.result.data
-      // if(response.code ==0){
-      //   //判断更新 
-      //   Alert.alert(
-      //     '更新通知',
-      //     `当前版本：${AppInfo.appVersion}，最新版本${version}`,
-      //     [
-      //       {text: 'OK', onPress: () => {
-      //         console.log('baidu')
-      //         // Linking.openURL('https:www.baidu.com');
-      //       }},
-      //     ]
-      //   )
-      // }
-    })
+    // Alert("123123")
+    
     
   }
   render() {
@@ -225,6 +258,10 @@ class App extends Component {
       <View style={{flex: 1}}>
         <Router
           scenes={scenes}
+          config={{
+            domain: "1111",
+            static:'123123123'
+          }}
           createReducer={reducerCreate}
           tintColor='white'
           getSceneStyle={getSceneStyle}

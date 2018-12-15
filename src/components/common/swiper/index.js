@@ -101,4 +101,8 @@ var styles = StyleSheet.create({
     top:100,
     right:10,
   },
+  slide: {
+    marginBottom:10
+    // marginTop:10
+  }
 });

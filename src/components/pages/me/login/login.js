@@ -121,11 +121,12 @@ export default class Login extends BaseComponent {
           return false;
         }
 
+        console.log(response.result, 9877123)
         //登录成功，存储用户数据
-        storage.save('userInfo', response.result);
+        storage.save('token', response.result.token);
         this.props.callback && this.props.callback('login')
         Toast.showSuccess('登录成功', () => Actions.pop())
-          // storage.save('userInfo', params)
+        // storage.save('userInfo', params)
     })
   }
 

@@ -25,12 +25,15 @@ export default class CategoryList extends BaseComponent  {
   }
 
   componentDidMount() {
-    Promise.resolve(action.catatList()).then(response => {
-      this.timer = setTimeout(() => {
-        this.setState({
-          dataSource: response.result.data
-        })
-      }, (10))
+
+    Promise.resolve(action.lableList({parentId:106})).then(response => {
+      if(response){
+        this.timer = setTimeout(() => {
+          this.setState({
+            dataSource: response.result.data
+          })
+        }, (10))
+      }
     })
   }
 
@@ -66,7 +69,6 @@ export default class CategoryList extends BaseComponent  {
 
   _render() {
     const { dataSource } = this.state
-    console.log(dataSource == "", 9876788)
     if(dataSource.length == ""){
       this._renderEmpty()
     }

@@ -33,16 +33,14 @@ export default class TrailerList extends BaseComponent {
   }
 
   componentDidMount() {
-    const { categoryId, title } = this.props;
-
-    this._getListData(categoryId)
-
+    this._getListData()
   }
 
 
-  _getListData = id => {
+  _getListData = () => {
 
-    Promise.resolve(action.contentList({categoryId:id,limt:10,pageNum:1})).then(response => {
+    Promise.resolve(action.storeList({limt:10,pageNum:1})).then(response => {
+      console.log(response, '123123')
       this.setState({
         dataSource: response.result.data
       })
@@ -110,11 +108,10 @@ export default class TrailerList extends BaseComponent {
   }
 
   onRefresh = ()=>{
-    console.log('onRefresh');
+    this._getListData()
   }
 
   _render() {
-
     return (
       <View style={styles.content}>
         {this.state.dataSource ==""?this._renderEmpty():(
@@ -126,10 +123,12 @@ export default class TrailerList extends BaseComponent {
           keyExtractor = {this._extraUniqueKey}// 每个item的key
           refreshControl={<RefreshControl
             refreshing={false}
-            onRefresh={()=>{()=>this.onRefresh()}}
+            onRefresh={()=>this.onRefresh()}
             tintColor='red'
-            colors={['#ff0000', '#00ff00', '#0000ff']}
-            progressBackgroundColor="gray"/>}
+            title="Loading..."
+            colors={[commonStyle.themeColor]}
+            progressBackgroundColor="#fff"
+            />}
         />
       )}
       </View>

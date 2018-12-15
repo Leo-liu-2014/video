@@ -111,14 +111,13 @@ export default class Register extends BaseComponent {
     let params = {}
     params.email = this.state.name
     params.code = this.state.code
-    params.passworld = this.state.pwd
-    params.nickName = this.state.nickName
+    params.password = this.state.pwd
+    params.name = this.state.nickName
 
     /*
       先注释掉验证，用一些假数据
     */
-    /*
-    if(params.name ==""){
+    if(params.email ==""){
       Toast.showError("请输入邮箱");
       setTimeout(()=>{
         this.setState({
@@ -126,7 +125,7 @@ export default class Register extends BaseComponent {
         })
       },10)
     }
-    if(params.nickName ==""){
+    if(params.name ==""){
       Toast.showError("请填写昵称");
       setTimeout(()=>{
         this.setState({
@@ -144,7 +143,7 @@ export default class Register extends BaseComponent {
       },10)
       return false;
     }
-    if(params.pwd ==""){
+    if(params.password ==""){
       Toast.showError("请输入密码");
       setTimeout(()=>{
         this.setState({
@@ -166,29 +165,16 @@ export default class Register extends BaseComponent {
         return false;
       }
 
+      
       //登录成功，存储用户数据
-      storage.save('userInfo', response.result);
+      storage.save('token', response.result.token);
       this.props.callback && this.props.callback('login')
-      Toast.showSuccess('登录成功', () => Actions.pop())
+      Toast.showSuccess('注册成功', () => Actions.pop())
         // storage.save('userInfo', params)
   })
-
-  */
-
-    //登录成功，存储用户数据
-    let data = {
-      'email': 'jun880529@163.com',
-      'nickName': '大包子',
-      'code': '1234',
-      'type': 0,
-      'endDate': '1543968000000'
-    }
-    storage.save('userInfo', data);
-    this.props.callback && this.props.callback('login')
-    Toast.showSuccess('注册成功', () => Actions.pop())
-
-
-    
+    // storage.save('userInfo', data);
+    // this.props.callback && this.props.callback('login')
+    // Toast.showSuccess('注册成功', () => Actions.pop())
   }
 
   renderRegisterBtn() {

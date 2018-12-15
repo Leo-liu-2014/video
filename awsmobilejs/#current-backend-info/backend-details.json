@@ -1,0 +1,106 @@
+{
+	"name": "video-project-prod-2018-11-05-19-27-08",
+	"projectId": "2b5f1b9d-c73a-435f-a4e8-2c4185192a6a",
+	"region": "us-east-1",
+	"state": "NORMAL",
+	"createdDate": "2018-11-05T11:27:12.493Z",
+	"lastUpdatedDate": "2018-11-05T11:27:16.330Z",
+	"consoleUrl": "https://console.aws.amazon.com/mobilehub/home#/2b5f1b9d-c73a-435f-a4e8-2c4185192a6a/build",
+	"resources": [
+		{
+			"type": "AWS::Pinpoint::AnalyticsApplication",
+			"name": "videoprojectprod20181105192708_MobileHub",
+			"arn": "20307070ec0d4b19995dc4d7d972258c",
+			"feature": "analytics",
+			"attributes": {
+				"lastUpdateRequestID": "cca2ee9c-885d-40ce-a27e-1836da3b78bb"
+			}
+		},
+		{
+			"type": "AWS::IAM::Policy",
+			"name": "videoprojectprod_mobileanalytics_MOBILEHUB_1975111630",
+			"arn": null,
+			"feature": "analytics",
+			"attributes": {
+				"authType": "unauthenticated",
+				"lastUpdateRequestID": "cca2ee9c-885d-40ce-a27e-1836da3b78bb",
+				"role": "videoprojectprod_unauth_MOBILEHUB_1975111630"
+			}
+		},
+		{
+			"type": "AWS::Cognito::IdentityPool",
+			"name": "videoprojectprod_MOBILEHUB_1975111630",
+			"arn": "us-east-1:0ae5faff-b2d5-49be-9309-391a9652162c",
+			"feature": "user-signin",
+			"attributes": {
+				"lastUpdateRequestID": "cca2ee9c-885d-40ce-a27e-1836da3b78bb",
+				"poolid": "us-east-1:0ae5faff-b2d5-49be-9309-391a9652162c",
+				"roleARNs": "arn:aws:iam::852773003743:role/videoprojectprod_unauth_MOBILEHUB_1975111630"
+			}
+		},
+		{
+			"type": "AWS::IAM::Role",
+			"name": "videoprojectprod_unauth_MOBILEHUB_1975111630",
+			"arn": "arn:aws:iam::852773003743:role/videoprojectprod_unauth_MOBILEHUB_1975111630",
+			"feature": "user-signin",
+			"attributes": {
+				"authType": "unauthenticated",
+				"lastUpdateRequestID": "cca2ee9c-885d-40ce-a27e-1836da3b78bb"
+			}
+		},
+		{
+			"type": "AWS::S3::Bucket",
+			"name": "videoprojectprod-hosting-mobilehub-1975111630",
+			"arn": null,
+			"feature": "hosting",
+			"attributes": {
+				"lastUpdateRequestID": "cca2ee9c-885d-40ce-a27e-1836da3b78bb",
+				"region": "us-east-1",
+				"s3-bucket-console-url": "https://s3.console.aws.amazon.com/s3/buckets/videoprojectprod-hosting-mobilehub-1975111630",
+				"s3-bucket-website-url": "https://s3.amazonaws.com/videoprojectprod-hosting-mobilehub-1975111630"
+			}
+		},
+		{
+			"type": "AWS::CloudFront::Distribution",
+			"name": "d1r2jfef8v6bk5.cloudfront.net",
+			"arn": null,
+			"feature": "hosting",
+			"attributes": {
+				"id": "E1WZWWC3F0AWJB",
+				"lastUpdateRequestID": "cca2ee9c-885d-40ce-a27e-1836da3b78bb"
+			}
+		},
+		{
+			"type": "AWS::IAM::Policy",
+			"name": "videoprojectprod_hosting_MOBILEHUB_1975111630",
+			"arn": null,
+			"feature": "hosting",
+			"attributes": {
+				"authType": "unauthenticated",
+				"lastUpdateRequestID": "cca2ee9c-885d-40ce-a27e-1836da3b78bb",
+				"role": "videoprojectprod_unauth_MOBILEHUB_1975111630"
+			}
+		},
+		{
+			"type": "AWS::S3::Bucket",
+			"name": "videoprojectprod-deployments-mobilehub-1975111630",
+			"arn": null,
+			"feature": "common",
+			"attributes": {
+				"region": "us-east-1",
+				"s3-bucket-console-url": "https://s3.console.aws.amazon.com/s3/buckets/videoprojectprod-deployments-mobilehub-1975111630"
+			}
+		},
+		{
+			"type": "AWS::CloudFormation::Stack",
+			"name": "Development",
+			"arn": null,
+			"feature": "cloud-api",
+			"attributes": {
+				"primary": "true",
+				"region": "us-east-1",
+				"stateSummary": "NOT_YET_DEPLOYED"
+			}
+		}
+	]
+}

@@ -8,15 +8,21 @@ import {Component} from 'react'
 import responseType from '../../../constants/responseType'
 import {Toast} from '../../toast'
 import {RootHUD} from '../../progressHUD'
+import {storage} from '../../../utils'
+import {Actions} from "react-native-router-flux"
 
 /**
  * fetch 网络请求的header，可自定义header 内容
  * @type {{Accept: string, Content-Type: string, accessToken: *}}
  */
+
 let header = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
 }
+storage.load('token', (response) => {
+  header.token = response
+})
 
 /**
  * GET 请求时，拼接请求URL
@@ -75,7 +81,7 @@ export default class HttpUtils extends Component {
    * @returns {Promise}
    */
   static getRequest = (url, params = {}) => {
-    // RootHUD.show()
+    RootHUD.show()
     return timeoutFetch(fetch(handleUrl(url)(params), {
       method: 'GET',
       headers: header
@@ -83,12 +89,17 @@ export default class HttpUtils extends Component {
       .then((response) => {
         if (response.ok) {
           return response.json()
-        } else {
+        } 
+        if(response.status === 403){
+          Actions.userLogin()
+        }
+        else {
+          console.log(url, 'err url')
           Toast.show('服务器繁忙，请稍后再试；\r\nCode:' + response.status)
         }
       })
       .then((response) => {
-        // RootHUD.hidden()
+        RootHUD.hidden()
         // response.code：是与服务器端约定code：200表示请求成功，非200表示请求失败，message：请求失败内容
         if (response && response.res === responseType.RESPONSE_SUCCESS) {
           return response
@@ -120,7 +131,7 @@ export default class HttpUtils extends Component {
       .then((response) => {
         if (response.ok) {
           return response.json()
-        } else {
+        } else { 
           Toast.show('服务器繁忙，请稍后再试；\r\nCode:' + response.status)
         }
       })

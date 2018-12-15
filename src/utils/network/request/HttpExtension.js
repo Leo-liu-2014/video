@@ -8,6 +8,7 @@ import HttpUtils from './HttpUtils'
 import {API_URL, MIAMI_URL, TIME_MOVIE_URL, TIME_TICKET_URL} from '../../../constants/urlConfig'
 import {ApiSource} from '../../../constants/commonType'
 import {dataCache} from '../cache'
+import {storage} from '../../../utils'
 
 /**
  * GET \ POST
@@ -22,6 +23,8 @@ import {dataCache} from '../cache'
  * 返回的值如果从缓存中取到数据就直接换行数据，或则返回promise对象
  */
 const fetchData = (isCache, requestType) => (url, params, source, callback) => {
+
+  
 
   switch (source) {
     case ApiSource.MIAMIMUSIC:
@@ -38,7 +41,15 @@ const fetchData = (isCache, requestType) => (url, params, source, callback) => {
       break
   }
 
+  // async const fetchFunc = () => {
+  //   let config = await storage.load('token', (response) => { return response });
+    
+  //   //let promises = requestType === 'GET' ? HttpUtils.getRequest(url, params) : HttpUtils.postRequrst(url, params)
+  //   console.log(promises, 123)
+
+  // }
   const fetchFunc = () => {
+    //async const formateUrl = storage.load('config');
     var promises= requestType === 'GET' ? HttpUtils.getRequest(url, params) : HttpUtils.postRequrst(url, params)
     
     if (callback && typeof callback === 'function') {
@@ -46,7 +57,25 @@ const fetchData = (isCache, requestType) => (url, params, source, callback) => {
         return callback(response)
       })
     }
+    
     return promises
+  }
+
+  const formateUrl = () => {
+
+    //获取配置接口地址
+    // storage.load('static', (response) => {
+    //   if(response){
+    //     console.log(response, 1)
+    //     url = `${response}${url}`
+    //   }else{
+    //     console.log(response, 2)
+    //     url = `${API_URL}${url}`
+    //   }
+    // })
+
+    // console.log(url, 123123)
+    return url
   }
 
   return dataCache(url, fetchFunc, isCache)

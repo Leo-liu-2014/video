@@ -4,8 +4,11 @@ import com.facebook.react.ReactActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import org.devio.rn.splashscreen.SplashScreen;
 
-import com.one.module.ShareModule;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.analytics.MobclickAgent.EScenarioType;
+
 
 public class MainActivity extends ReactActivity {
 
@@ -28,7 +31,13 @@ public class MainActivity extends ReactActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //添加开屏图
+        SplashScreen.show(this);
         super.onCreate(savedInstanceState);
-        ShareModule.initActivity(this);
+        
+        MobclickAgent.setSessionContinueMillis(1000);
+        MobclickAgent.setScenarioType(this, EScenarioType.E_DUM_NORMAL);
+        MobclickAgent.openActivityDurationTrack(false);
+
     }
 }

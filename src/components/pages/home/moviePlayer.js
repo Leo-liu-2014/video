@@ -2,7 +2,7 @@
  * Created by guangqiang on 2017/9/7.
  */
 import React, {Component} from 'react'
-import {View, Text, TouchableOpacity, Slider, ActivityIndicator, Modal, Platform, Image} from 'react-native'
+import {View, Text, TouchableOpacity, ScrollView, Slider, ActivityIndicator, Modal, Platform, Image, StatusBar} from 'react-native'
 import Video from 'react-native-video'
 import Orientation from 'react-native-orientation'
 import {commonStyle} from '../../../utils/commonStyle'
@@ -12,10 +12,12 @@ import {formatTime} from '../../../utils/formatTime'
 import deviceInfo from '../../../utils/deviceInfo'
 import {MessageBarManager} from 'react-native-message-bar'
 import {StyleSheet} from '../../common'
+import ShowTimeCell from './showTime/showTimeCell'
 
 import { RootHUD } from '../../../utils/progressHUD'
 
 import action from '../../../actionCreators/category'
+import AppInfo from '../../../../config';
 
 const playerHeight = 250
 
@@ -34,12 +36,13 @@ export default class MoviePlayer extends Component {
       isTouchedScreen: true,
       modalVisible: true,
       isLock: false,
-      isDisplay: true,
+      isDisplay: false,
       videoUrl:"",
       videoTitle:"暂无视频.",
       videoRemark:"暂无介绍。" ,
       recommendData: [],
-      isloading:true
+      isloading:true,
+      isStore: false
       
     }
   }
@@ -59,15 +62,16 @@ export default class MoviePlayer extends Component {
     Orientation.addSpecificOrientationListener(this._updateSpecificOrientation)
 
     Promise.resolve(action.contentDetail({id:this.props.id})).then(response => {
-      const { data, video:{ name, url, remark, isDispaly, isStore }} = response.result;
+      const { data, video:{ name, url, remark, isDispaly, isStore, numlook }} = response.result;
       this.setState({
         videoTitle: name,
         videoUrl: url,
         videoTitle: name, 
         videoRemark: remark,
         isDisplay: true,
-        isStore: isStore,
-        recommendData: data
+        isStore: isStore?isStore:false,
+        recommendData: data,
+        numlook: numlook
       })
     })
     
@@ -82,17 +86,27 @@ export default class MoviePlayer extends Component {
   _updateSpecificOrientation = specificOrientation => this.setState({ specificOrientation })
 
   loadStart(data) {
-    console.log('loading start', data)
+    console.log(data, 'load start')
   }
 
   setDuration(duration) {
-    console.log(duration, 'onload')
+    
     //播放成功 增加播放次数
     this.setState({
       isloading: false
     })
     action.moviesNum({id:this.props.id})
     this.setState({duration: duration.duration})
+  }
+
+  addStore(){
+    action.addStore({id:this.props.id}).then((res)=>{
+      if(res.result.state){
+        this.setState({
+          isStore: !this.state.isStore
+        })
+      }
+    })
   }
 
   setTime(data) {
@@ -106,6 +120,7 @@ export default class MoviePlayer extends Component {
 
   onEnd(data) {
     this.player.seek(0)
+    console.log(data, 'onEnd')
   }
 
   videoError(error) {
@@ -163,7 +178,7 @@ export default class MoviePlayer extends Component {
         <TouchableOpacity onPress={()=>{Actions.moviePlayer({id: item.id})}} style={styles.recommendListDetail}>
               <Image
                 style={styles.img}
-                source={{uri: item.url}}
+                source={{uri: item.img}}
               />
               <Text numberOfLines={1} style={{fontSize: 12,alignItems:'flex-start',textAlign: "left", marginVertical: 6, color: commonStyle.textBlockColor}}>
                 {item.name}
@@ -173,11 +188,19 @@ export default class MoviePlayer extends Component {
     })
   }
 
+  formateUrl(url){
+    if(url.indexOf("http") != -1){
+      return url
+    }
+    return AppInfo.appDomain + url
+  }
+
   render() {
-    const {orientation, isLock, videoTitle, videoUrl, isDisplay, isStore, videoRemark, recommendData, isloading } = this.state
-    console.log(videoUrl,'orientation')
+    const {orientation, isLock, videoTitle, videoUrl, isDisplay, isStore, videoRemark, recommendData, isloading, numlook } = this.state
+    console.log(this.formateUrl(videoUrl), 'aaaaa')
     return (
       <View style={{flex:1}}>
+        <StatusBar hidden={true} />
         {/* 视频播放类型 */}
         {isDisplay?
         <TouchableOpacity
@@ -185,35 +208,37 @@ export default class MoviePlayer extends Component {
             marginTop: orientation === 'PORTRAIT' ? Platform.OS === 'ios' ? (deviceInfo.isIphoneX ? 40 : 20) : 0 : 0}]}
             onPress={() => this.setState({isTouchedScreen: !this.state.isTouchedScreen})}
             activeOpacity={1}>
-            <Video 
-              source={{uri: videoUrl}}
-              // source={{uri:"http://classrecord.mmears.com/2018102709000000000309654/2018102709000000000309654.mp4"}}
-              ref={ref => this.player = ref}
-              rate={this.state.rate}
-              volume={1.0}
-              muted={false}
-              paused={this.state.paused}
-              resizeMode="cover"
-              repeat={true}
-              playInBackground={false}
-              playWhenInactive={false}
-              ignoreSilentSwitch={"ignore"}
-              progressUpdateInterval={250.0}
-              onLoadStart={(data) => this.loadStart(data)}
-              onLoad={data => this.setDuration(data)}
-              onProgress={(data) => this.setTime(data)}
-              onEnd={(data) => this.onEnd(data)}
-              onError={(data) => this.videoError(data)}
-              onBuffer={(data) => this.onBuffer(data)}
-              onTimedMetadata={(data) => this.onTimedMetadata(data)}
-              style={[styles.videoPlayer]}
-          /> 
+            {
+              isDisplay?(<Video 
+                source={{uri: this.formateUrl(videoUrl)}}
+                // source={{uri:"http://classrecord.mmears.com/2018102709000000000309654/2018102709000000000309654.mp4"}}
+                ref={ref => this.player = ref}
+                rate={this.state.rate}
+                volume={1.0}
+                muted={false}
+                paused={this.state.paused}
+                resizeMode="cover"
+                repeat={true}
+                playInBackground={true}
+                playWhenInactive={false}
+                ignoreSilentSwitch={"ignore"}
+                progressUpdateInterval={250.0}
+                onLoadStart={(data) => this.loadStart(data)}
+                onLoad={data => this.setDuration(data)}
+                onProgress={(data) => this.setTime(data)}
+                onEnd={(data) => this.onEnd(data)}
+                onError={(data) => this.videoError(data)}
+                onBuffer={(data) => this.onBuffer(data)}
+                onTimedMetadata={(data) => this.onTimedMetadata(data)}
+                style={[styles.videoPlayer]}
+            /> ): <View />
+            }
           {
               isloading?<View style={styles.loading}><Text style={{color:"#fff"}}>视频加载中……</Text></View>:null
           }
           
           {
-            this.state.isTouchedScreen && !isLock  && !isloading ?
+            this.state.isTouchedScreen && !isLock?
               <View style={styles.navContentHeaderStyle}>
                 <View style={{flexDirection: 'row', alignItems: commonStyle.center, flex: 1}}>
                   <TouchableOpacity
@@ -226,9 +251,10 @@ export default class MoviePlayer extends Component {
                 <View style={{flexDirection: 'row', alignItems: commonStyle.center, justifyContent: commonStyle.between}}>
                   <TouchableOpacity
                     style={styles.navToolBar}
-                    onPress={() => alert('关注视频')}>
+                    onPress={() => this.addStore()}>
                     {/* <Icon name={'oneIcon|tv_o'} size={20} color={commonStyle.white}/> */}
-                    <Text style={{color:"#fff"}}>{isStore?"取消收藏":"收藏"}</Text>
+                    {/* <Text style={{color:"#fff"}}>{isStore?"取消收藏":"收藏"}</Text> */}
+                    <Icon name={'fontAwesome|heart'} size={18} color={isStore?commonStyle.themeColor:commonStyle.white}/>
                   </TouchableOpacity>
                 </View>
               </View> : <View/>
@@ -305,18 +331,37 @@ export default class MoviePlayer extends Component {
             </View>
           </View>
         )}
-        <View style={styles.detailContent}>
-          <Text style={{color: commonStyle.textBlockColor, lineHeight: 20}}>{`详细介绍： ${videoRemark}`}</Text>
-        </View>
-        {recommendData==""?<View /> :(
-          <View style={styles.recommend}>
-            <Text style={styles.recommendText}>热门推荐</Text>
-            <View style={styles.recommendList}>
-              {this.renderRecommendList(recommendData)}
-            </View>
+        <ScrollView >
+          <View style={styles.detailContent}>
+            <Text style={{color: commonStyle.textBlockColor, lineHeight: 20}}>{`详细介绍： ${videoRemark}`}</Text>
+            <Text style={{color: commonStyle.textBlockColor, lineHeight: 20}}>{`观看次数： ${numlook}次`}</Text>
           </View>
-        )}
-        
+          {recommendData==""?<View /> :(
+            <View style={styles.recommend}>
+              <Text style={styles.recommendText}>热门推荐</Text>
+              <View style={styles.recommendList}>
+                {recommendData.map((item, index)=>{
+                  return (
+                      <ShowTimeCell key={`recommend${index}`} index={`recommend${index}`} rowData={ item } />
+                  )
+                  
+                    // return(
+                    //   <TouchableOpacity key={`recommend${index}`} onPress={()=>{Actions.moviePlayer({id: item.id})}} style={styles.recommendListDetail}>
+                    //         <Image
+                    //           style={styles.img}
+                    //           source={{uri: item.img}}
+                    //         />
+                    //         <Text numberOfLines={1} style={{fontSize: 12,alignItems:'flex-start',textAlign: "left", marginVertical: 6, color: commonStyle.textBlockColor}}>
+                    //           {item.name}
+                    //         </Text>
+                    //   </TouchableOpacity>
+                    // )
+                  })
+                }
+              </View>
+            </View>
+          )}
+        </ScrollView>
       </View>
     )
   }

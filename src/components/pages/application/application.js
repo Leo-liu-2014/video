@@ -52,7 +52,6 @@ export default class CategoryList extends BaseComponent  {
 
   _render() {
     const { dataSource } = this.state
-    console.log(dataSource, 987)
     return (
       <View style={{flex:1}}>
         <ScrollView>

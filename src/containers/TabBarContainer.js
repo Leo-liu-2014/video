@@ -1,17 +1,18 @@
 /**
- * Created by guangqiang on 2017/9/4.
+ * Created by godliu on 2018/10/20.
  */
 import React, {Component} from 'react'
 import {StyleSheet, View, Image} from 'react-native'
 import TabNavigator from 'react-native-tab-navigator'
 import Application from '../components/pages/application/application'
 import Reading from '../components/pages/reading/reading'
-import Category from '../components/pages/category/categoryListLabel'
+import Category from '../components/pages/category/categoryList'
 import Home from '../components/pages/home/home'
 import Me from '../components/pages/me/me'
 import {Icon} from '../utils/icon'
 import {commonStyle} from '../utils'
 import deviceInfo from '../utils/deviceInfo'
+import Collection from '../components/pages/collection/index'
 
 export default class MainPage extends Component {
 
@@ -33,8 +34,8 @@ export default class MainPage extends Component {
             title="首页"
             titleStyle={styles.tabText}
             selectedTitleStyle={styles.selectedTabText}
-            renderIcon={() => <Icon name={'oneIcon|tb_Movie_o'} size={20} color={commonStyle.textGrayColor}/>}
-            renderSelectedIcon={() => <Icon name={'oneIcon|tb_Movie_o'} size={20} color={commonStyle.themeColor}/>}
+            renderIcon={() => <Icon name={'fontAwesome|home'} size={20} color={commonStyle.textGrayColor}/>}
+            renderSelectedIcon={() => <Icon name={'fontAwesome|home'} size={20} color={commonStyle.themeColor}/>}
             onPress={() => this.setState({ selectedTab: 'Home' })}>
             <Home />
           </TabNavigator.Item>
@@ -43,12 +44,23 @@ export default class MainPage extends Component {
             title="分类"
             titleStyle={styles.tabText}
             selectedTitleStyle={styles.selectedTabText}
-            renderIcon={() => <Icon name={'oneIcon|tb_Music_o'} size={20} color={commonStyle.textGrayColor}/>}
-            renderSelectedIcon={() => <Icon name={'oneIcon|tb_Music_o'} size={20} color={commonStyle.themeColor}/>}
+            renderIcon={() => <Icon name={'fontAwesome|align-justify'} size={20} color={commonStyle.textGrayColor}/>}
+            renderSelectedIcon={() => <Icon name={'fontAwesome|align-justify'} size={20} color={commonStyle.themeColor}/>}
             onPress={() => this.setState({ selectedTab: 'Music' })}>
             <Category />
           </TabNavigator.Item>
           <TabNavigator.Item
+            selected={this.state.selectedTab === 'Collection'}
+            title="收藏"
+            titleStyle={styles.tabText}
+            selectedTitleStyle={styles.selectedTabText}
+            renderIcon={() => <Icon name={'fontAwesome|heart'} size={20} color={commonStyle.textGrayColor}/>}
+            renderSelectedIcon={() => <Icon name={'fontAwesome|heart'} size={20} color={commonStyle.themeColor}/>}
+            onPress={() => this.setState({ selectedTab: 'Collection' })}>
+            <Collection />
+          </TabNavigator.Item>
+
+          {/* <TabNavigator.Item
             selected={this.state.selectedTab === 'Picture'}
             title="应用"
             titleStyle={styles.tabText}
@@ -67,7 +79,7 @@ export default class MainPage extends Component {
             renderSelectedIcon={() => <Icon name={'oneIcon|tb_article_o'} size={20} color={commonStyle.themeColor}/>}
             onPress={() => this.setState({ selectedTab: 'Reading' })}>
             <Reading/>
-          </TabNavigator.Item>
+          </TabNavigator.Item> */}
           <TabNavigator.Item
             selected={this.state.selectedTab === 'Me'}
             title="我的"

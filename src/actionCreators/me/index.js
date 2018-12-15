@@ -8,8 +8,10 @@ import {RegExpr} from '../../utils'
 
 
 const login = params =>  postFetch(PATH.USER_LOGIN, params)
+const register = params =>  postFetch(PATH.USER_REGISTER, params)
+const getuserInfo = params => getFetch(`/user/getuserInfo`)
+const getwximages = params => getFetch(`/voides/getwximages`)
 
-const register = params =>  postFetchForValidator(PATH.USER_REGISTER, params)
 
 const loginValidator = () => ({
   validator: {
@@ -44,5 +46,7 @@ export default {
   login,
   register,
   loginValidator,
-  registerValidator
+  registerValidator,
+  getuserInfo,
+  getwximages
 }

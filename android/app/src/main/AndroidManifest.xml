@@ -91,8 +91,10 @@
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="5a0d4882a40fa3022800000d" >
+            android:value="5beaff7ef1f556a82b0007fc" >
         </meta-data>
+        <meta-data android:value="aws" android:name="UMENG_CHANNEL"/>
+        <meta-data android:name="android.max_aspect" android:value="2.1" />
         <!-- 到这里结束复制 -->
     </application>
 

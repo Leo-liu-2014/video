@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, ListView, Image, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, SectionList, RefreshControl} from 'react-native'
+import {View, ListView, Image, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, SectionList, RefreshControl, Input} from 'react-native'
 import {commonStyle} from '../../../../utils/commonStyle'
 import {Actions} from 'react-native-router-flux'
 import ShowTimeCell from './showTimeCell'
@@ -7,6 +7,8 @@ import deviceInfo from '../../../../utils/deviceInfo'
 
 import action from '../../../../actionCreators/category'
 import Swiper from '../../../common/swiper'
+import {Icon} from '../../../../utils/icon'
+
 
 export default class ShowTimeList extends Component {
   
@@ -25,8 +27,8 @@ export default class ShowTimeList extends Component {
   getAllData = () =>{
     const { id, title } = this.props;
 
-    if(id == 1){
-      this._getRecommendListData(id)
+    if(id == 132){
+      this._getListData(id)
       // this.setState({
       //   dataSource: this._getRecommendListData(id)
       // })
@@ -53,7 +55,7 @@ export default class ShowTimeList extends Component {
               // horizontal={true}
               // pageSize={4}  // 配置pageSize确认网格数量
               refreshing={false}
-              initialNumToRender={2}
+              // initialNumToRender={2}
               sections={ dataSource }
               onRefresh={()=>{
                 console.log('开始刷新');
@@ -103,12 +105,14 @@ export default class ShowTimeList extends Component {
   }
 
   _getListData = id => {
-    Promise.resolve(action.contentList({categoryId:id,limt:4,pageNum:1})).then(response => {
+    Promise.resolve(action.contentList({categoryId:id,limt:20,pageNum:1})).then(response => {
       setTimeout(()=>{
         this.setState({
           dataSource: response.result.data
         })
       },10)
+    }).catch((e)=>{
+      console.log(e)
     })
   }
 
@@ -160,6 +164,7 @@ export default class ShowTimeList extends Component {
   _renderEmpty() {
     return(
       <View style={styles.empty}>
+        <Icon name={'fontAwesome|spinner'} size={20} />
         <Text>正在拼命加载中</Text>
       </View>
     )
@@ -178,6 +183,7 @@ export default class ShowTimeList extends Component {
   render() {
     const { refreshing, dataSource } = this.state
     const { id } = this.props
+
     return (
       <View style={{flex:1}}>
         <ScrollView 
@@ -192,7 +198,11 @@ export default class ShowTimeList extends Component {
               progressBackgroundColor="#fff"
             />
           }>
-          {id == 1 ? <Swiper type="home" />:null}
+          {id == 132 ? (
+            <View>
+              <Swiper type="home" />
+            </View>
+          ):null}
           <View style={styles.content}>
             {dataSource==""?this._renderEmpty():this.renderListView(dataSource)}
           </View>

@@ -1,0 +1,19 @@
+{
+	"ProjectName": "video-project-prod",
+	"ProjectPath": "/Users/liu/Code/video-project-prod",
+	"InitializationTime": "2018-11-05-19-28-06",
+	"LastConfigurationTime": "2018-11-05-19-25-30",
+	"LastNPMInstallTime": "",
+	"FrontendLastBuildTime": "",
+	"LastPublishTime": "",
+	"BackendLastSyncTime": "2018-11-05-19-27-25",
+	"BackendLastBuildTime": "",
+	"BackendLastPushTime": "",
+	"BackendProjectID": "2b5f1b9d-c73a-435f-a4e8-2c4185192a6a",
+	"BackendProjectName": "video-project-prod-2018-11-05-19-27-08",
+	"BackendProjectConsoleUrl": "https://console.aws.amazon.com/mobilehub/home#/2b5f1b9d-c73a-435f-a4e8-2c4185192a6a/build",
+	"BackendProjectCreationTime": "2018-11-05T11:27:12.493Z",
+	"BackendProjectLastUpdatedTime": "2018-11-05T11:27:16.330Z",
+	"Framework": "react-native",
+	"BackendLastSyncToDevTime": "2018-11-05-19-27-25"
+}
