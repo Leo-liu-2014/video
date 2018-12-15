@@ -3,18 +3,15 @@ import store from '../store'
 import {Provider, connect} from 'react-redux'
 import {Scene, Router, Actions, Reducer, ActionConst, Modal, Stack, Lightbox} from "react-native-router-flux"
 import {View, Platform,  Alert, Linking, NetInfo} from "react-native"
-import Button from "react-native-button";
 import Action from '../actions'
 import {dispatch} from '../utils/venilog/dispatchLog'
 import type from '../constants/actionType'
-import {commonStyle} from '../utils/commonStyle'
 
 import Author from '../components/pages/me/author'
 
 import Loading from '../utils/progressHUD/progressHUD'
 import MessageBar from "../utils/messageBar/MessageBar"
 
-import CustomComp from '../components/pages/demoPage/TestCustomUIComponent'
 
 
 import TabBar from './TabBarContainer'
@@ -40,6 +37,11 @@ import UserInfo from '../components/pages/me/userInfo'
 import Vip from '../components/pages/me/vip'
 import ChangePwd from '../components/pages/me/changePwd'
 import Search from '../components/pages/search/index'
+
+import Home from '../components/pages/home/home'
+
+
+
 
 import SelectorList from '../components/common/selector'
 import WebView from '../components/common/webView'
@@ -139,6 +141,8 @@ const scenes = Actions.create(
           <Scene key='userInfo' hideNavBar component={UserInfo}/>
 
           <Scene key='vip' hideNavBar component={Vip}/>
+          <Scene key='home' component={Home}/>
+          
 
           <Scene key='changePwd' hideNavBar component={ChangePwd}/>
 
@@ -189,7 +193,7 @@ class App extends Component {
 
     Promise.resolve(action.getConfig({type:devices})).then(response => {
       const { versions, domain, necessary, versionurl } = response.result.data
-      console.log(versions != AppInfo.appVersion, '99876')
+      //console.log(versions != AppInfo.appVersion, '99876')
       if(versions != AppInfo.appVersion){
           Alert.alert(
           '更新通知',
@@ -203,21 +207,22 @@ class App extends Component {
         return 
       }
       
-      //把接口域名和资源域名写到localstoage里, 每次初始化的时候更新
+    //   //把接口域名和资源域名写到localstoage里, 每次初始化的时候更新
 
-      if( domain != "" || domain){
-        storage.save('domain',domain)
-      }
+    //   if( domain != "" || domain){
+    //     storage.save('domain',domain)
+    //   }
 
-      if(versionurl !='' || versionurl){
-        storage.save('static',versionurl)
-      }
+    //   if(versionurl !='' || versionurl){
+    //     storage.save('static',versionurl)
+    //   }
 
       SplashScreen.hide();
 
-    }).catch((err)=>{
-      console.log(err)
+     }).catch((err)=>{
+    //   console.log(err)
     })
+
     
     // NetInfo.isConnected.fetch().then(isConnected => {
     //   console.log('First, is ' + (isConnected ? 'online' : 'offline'));
@@ -236,12 +241,12 @@ class App extends Component {
   }
   componentDidMount(){
     
-    storage.load('token', (response) => {
-      if(!response){
-        Actions.userLogin()
-        // Actions.userRegister();
-      }
-    })
+    // storage.load('token', (response) => {
+    //   if(!response){
+    //     //Actions.userLogin()
+    //     // Actions.userRegister();
+    //   }
+    // })
 
     
 

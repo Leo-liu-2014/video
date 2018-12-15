@@ -13,8 +13,6 @@ import {commonStyle} from '../../../utils/commonStyle'
 import deviceInfo from '../../../utils/deviceInfo'
 import ShowTimeList from './showTime/showTimeList'
 import {Icon, storage} from '../../../utils'
-import { SearchBar } from 'react-native-elements';
-import { RootHUD } from '../../../utils/progressHUD'
 
 class Home extends Component {
   constructor(props) {
@@ -25,22 +23,22 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    storage.load('token', (response) => {
-      if(response){
-        try{
-          Promise.resolve(action.lableList({parentId:'131'}))
-            .then(response => {
-              if(response){
-                  this.setState({
-                    categoryList: response.result.data
-                  })
-                }
-              })
-        }catch(e){}
-      }
-    })
+    this.initHomeListDate()
   }
 
+  componentWillReceiveProps(){
+    this.initHomeListDate()
+  }
+  initHomeListDate(){
+    Promise.resolve(action.lableList({parentId:'131'}))
+    .then(response => {
+      if(response){
+          this.setState({
+            categoryList: response.result.data
+          })
+        }
+      })
+  }
   render() {
     const { categoryList } = this.state;
     return (

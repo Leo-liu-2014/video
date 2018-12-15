@@ -23,7 +23,6 @@ export default class ShowTimeCell extends Component {
         onPress={() => {
           // Actions.movieDetail({id: data.id})
           // Actions.moviePlayer({url: data.url, title: data.title, remark: data.remark, isDisplay:data.isDispaly})
-
           if(data.isDispaly){
               Alert.alert(
                 '暂无权限',
@@ -36,7 +35,10 @@ export default class ShowTimeCell extends Component {
               )
               return false
           }
-          
+          if(this.props.currentPage){
+            this.props.currentPageCallback(data.id);
+            return false
+          }
           Actions.moviePlayer({id: data.id})
 
         }}

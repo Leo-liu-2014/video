@@ -35,6 +35,9 @@ export default class TrailerList extends BaseComponent {
   componentDidMount() {
     this._getListData()
   }
+  componentWillReceiveProps(){
+    this._getListData()
+  }
 
 
   _getListData = () => {

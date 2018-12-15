@@ -25,8 +25,14 @@ export default class CategoryList extends BaseComponent  {
   }
 
   componentDidMount() {
-
-    Promise.resolve(action.lableList({parentId:106})).then(response => {
+    this.initCategoryData()
+  }
+  componentWillReceiveProps(){
+    this.initCategoryData()
+  }
+  initCategoryData(){
+    Promise.resolve(action.lableList({parentId:102})).then(response => {
+      console.log(response, 13123)
       if(response){
         this.timer = setTimeout(() => {
           this.setState({
@@ -43,7 +49,7 @@ export default class CategoryList extends BaseComponent  {
       <TouchableOpacity
         key={rowId}
         style={styles.cellStyle}
-        onPress={() => Actions.categoryListLabel({parentId: item.id,title:item.name})}
+        onPress={() => Actions.movieCategoryList({categoryId: item.id,title:item.name})}
       >
         <Image style={{width: 60, height: 60}} source={{uri: item.cover?item.cover:'http://img.yidianling.com/file/2016/07/inu911sfu2qf1jwe.jpg!s330x330'}}/>
         <View style={styles.contentStyle}>

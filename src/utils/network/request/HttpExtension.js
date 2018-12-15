@@ -49,7 +49,6 @@ const fetchData = (isCache, requestType) => (url, params, source, callback) => {
 
   // }
   const fetchFunc = () => {
-    //async const formateUrl = storage.load('config');
     var promises= requestType === 'GET' ? HttpUtils.getRequest(url, params) : HttpUtils.postRequrst(url, params)
     
     if (callback && typeof callback === 'function') {

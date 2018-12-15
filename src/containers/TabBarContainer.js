@@ -4,8 +4,6 @@
 import React, {Component} from 'react'
 import {StyleSheet, View, Image} from 'react-native'
 import TabNavigator from 'react-native-tab-navigator'
-import Application from '../components/pages/application/application'
-import Reading from '../components/pages/reading/reading'
 import Category from '../components/pages/category/categoryList'
 import Home from '../components/pages/home/home'
 import Me from '../components/pages/me/me'

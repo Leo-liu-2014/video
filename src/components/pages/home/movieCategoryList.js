@@ -34,17 +34,15 @@ export default class TrailerList extends BaseComponent {
 
   componentDidMount() {
     const { categoryId, title } = this.props;
-
     this._getListData(categoryId)
-
   }
-
 
   _getListData = id => {
 
     Promise.resolve(action.contentList({categoryId:id,limt:10,pageNum:1})).then(response => {
+      console.log(response, 123123)
       this.setState({
-        dataSource: response.result.data
+        dataSource: response.result.data || []
       })
     }).catch((error) => {
       console.error(error);

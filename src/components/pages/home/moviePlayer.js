@@ -61,7 +61,12 @@ export default class MoviePlayer extends Component {
     Orientation.addOrientationListener(this._updateOrientation)
     Orientation.addSpecificOrientationListener(this._updateSpecificOrientation)
 
-    Promise.resolve(action.contentDetail({id:this.props.id})).then(response => {
+    this.updateMovieInfo(this.props.id);
+    
+  }
+
+  updateMovieInfo(id){
+    Promise.resolve(action.contentDetail({id:id})).then(response => {
       const { data, video:{ name, url, remark, isDispaly, isStore, numlook }} = response.result;
       this.setState({
         videoTitle: name,
@@ -74,7 +79,6 @@ export default class MoviePlayer extends Component {
         numlook: numlook
       })
     })
-    
   }
 
   componentWillUnmount() {
@@ -193,6 +197,10 @@ export default class MoviePlayer extends Component {
       return url
     }
     return AppInfo.appDomain + url
+  }
+
+  currentPageCallback(id){
+    this.updateMovieInfo(id)
   }
 
   render() {
@@ -342,7 +350,7 @@ export default class MoviePlayer extends Component {
               <View style={styles.recommendList}>
                 {recommendData.map((item, index)=>{
                   return (
-                      <ShowTimeCell key={`recommend${index}`} index={`recommend${index}`} rowData={ item } />
+                      <ShowTimeCell key={`recommend${index}`} index={`recommend${index}`} rowData={ item } currentPage={true} currentPageCallback={(e)=>this.currentPageCallback(item.id)}/>
                   )
                   
                     // return(

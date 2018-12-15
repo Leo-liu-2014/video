@@ -20,8 +20,8 @@ let header = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
 }
-storage.load('token', (response) => {
-  header.token = response
+storage.load('token', res=>{
+  header.token = res
 })
 
 /**
@@ -69,7 +69,7 @@ const timeoutFetch = (original_fetch, timeout = 30000) => {
       timeoutBlock()
     },
     timeout)
-
+  
   return abortable_promise
 }
 
@@ -80,9 +80,17 @@ export default class HttpUtils extends Component {
    * @param params 请求参数
    * @returns {Promise}
    */
-  static getRequest = (url, params = {}) => {
+  static getRequest = async (url, params = {}) => {
+
     RootHUD.show()
-    return timeoutFetch(fetch(handleUrl(url)(params), {
+    storage.load('token', res=>{
+      header.token = res
+    })
+    await fetch(handleUrl(url)(params), {
+      method: 'GET',
+      headers: header
+    })
+    return timeoutFetch(await fetch(handleUrl(url)(params), {
       method: 'GET',
       headers: header
     }))
@@ -113,6 +121,8 @@ export default class HttpUtils extends Component {
         RootHUD.hidden()
         Toast.show(error)
       })
+
+    
   }
 
   /**

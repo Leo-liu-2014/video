@@ -1,7 +1,7 @@
 /**
  * Created by guangqiang on 2017/11/14.
  */
-import React from 'react'
+import React, {PureComponent, Component} from 'react'
 import {View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, ScrollView, NativeModules, Platform, Alert} from 'react-native'
 import {BaseComponent} from '../../../base/baseComponent'
 import {Icon, deviceInfo, Toast, commonStyle, storage} from '../../../../utils'
@@ -9,16 +9,8 @@ import {Actions} from 'react-native-router-flux'
 import {sharePlatform} from '../../../../constants/commonType'
 
 import { Button } from 'react-native-elements';
-
-
 import action from '../../../../actionCreators/me'
-
-
-const LoginModule = NativeModules.loginModule
-
-
-export default class Login extends BaseComponent {
-
+export default class Login extends Component { 
   constructor(props) {
     super(props)
     this.state = {
@@ -121,7 +113,6 @@ export default class Login extends BaseComponent {
           return false;
         }
 
-        console.log(response.result, 9877123)
         //登录成功，存储用户数据
         storage.save('token', response.result.token);
         this.props.callback && this.props.callback('login')
@@ -168,12 +159,16 @@ export default class Login extends BaseComponent {
   }
 
   _render() {
+    
+  }
+  render(){
     return (
       <View style={styles.container}>
-        <ScrollView>
+          <View style={styles.login}>
+            <Text style={styles.loginTitle}>草莓视频</Text>
+          </View>
           {this.renderInput()}
           {this.renderLoginBtn()}
-        </ScrollView>
       </View>
     )
   }
@@ -183,6 +178,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: commonStyle.white
+  },
+  login: {
+    marginTop:30,
+    alignItems: commonStyle.center,
+  },
+  loginTitle: {
+    fontSize:16,
   },
   activeClassName: {
     backgroundColor: commonStyle.themeColor,

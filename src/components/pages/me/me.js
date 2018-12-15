@@ -43,12 +43,10 @@ class Me extends BaseComponent {
   }
 
   componentDidMount() {
-    storage.load('token', (response) => {
-      if(response){
-        this.getUserInfo()
-      }
-    })
-      
+    this.getUserInfo()
+  }
+  componentWillReceiveProps(){
+    this.getUserInfo()
   }
 
   getUserInfo() {
@@ -79,8 +77,7 @@ class Me extends BaseComponent {
       `确定要退出登录吗？`,
       [
         {text: '确定', onPress: () => {
-            console.log('退出')
-            storage.remove('userInfo')
+            storage.remove('token')
             Actions.userLogin();
             // Linking.openURL('https:www.baidu.com');
           },
